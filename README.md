@@ -27,9 +27,11 @@
 ```python
 import requests
 
-r = requests.get('http://admin:password@172.26.135.121:5984/_all_dbs')
+r = requests.get('http://admin:password@172.26.135.121:5984/_all_dbs') 
 print(r.text)
 # 得到 ["twitter"]
 ```
+
+`http`是couchdb使用的通信协议，`admin`是用户名，`password`是密码。所有节点的用户名均为 `admin`，密码均为 `password`。CouchDB示例的默认端口号为 `5984`。
 
 以上只是一个简单的示例。在开发时，请选择你喜欢的HTTP包。最好的方法是使用专门的CouchDB包进行开发。
