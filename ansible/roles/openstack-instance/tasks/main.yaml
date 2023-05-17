@@ -1,0 +1,45 @@
+---
+# Create a new instance on MRC
+- name: Create a new instance
+  openstack.cloud.server:
+    name: "{{ item.name }}" # the name of the new instance
+    auto_floating_ip: false # don't use public ip
+    availability_zone: "{{ availability_zone }}" # availability zone
+    flavor: "{{ instance_flavor }}" # flavor
+    image: "{{ instance_image }}" # image
+    key_name: "{{ instance_key_name }}" # key pair name
+    network: "{{ instance_network }}"    # network name
+    security_groups: "{{ security_group }}" # security groups
+    timeout: 600 # wait for at most 10 minutes
+    volumes: "{{ item.volumes }}" # a list of volumes
+    state: present
+    wait: true # wait for the instance to be created
+  loop: "{{ instances }}"
+  register: os_instance
+
+# Prints out debugging information
+- name: Print out debugging information
+  ansible.builtin.debug:
+    msg: "Instance {{ item.server.name }} has been created. IP address is {{ item.server.accessIPv4 }}"
+  loop: "{{ os_instance.results }}"
+  when: item.server is defined
+
+# Waits for connection
+- name: Wait for connection
+  ansible.builtin.wait_for:
+    host: "{{ item.server.accessIPv4 }}"
+    port: 22
+    timeout: 120
+    search_regex: OpenSSH
+  loop: "{{ os_instance.results }}"
+  when: item.server is defined
+
+# Add hosts to Ansible in-memory inventory
+- name: Add host
+  ansible.builtin.add_host:
+    name: "{{ item.server.accessIPv4 }}" # the ip address of the new host
+    groups: db_servers # the name of the group to add the host to
+  loop: "{{ os_instance.results }}"
+  when: item.server is defined
+...
+

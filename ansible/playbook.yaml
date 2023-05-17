@@ -1,21 +1,25 @@
 ---
-# - name:
-#   hosts: localhost
-#   vars_files:
-#     - host_vars/nectar.yaml
-#   gather_facts: true
-
-#   roles:
-#     - role: openstack-common
-#     - role: openstack-volume
-#     - role: openstack-security-group
-#     - role: openstack-instance
-
-- name:
-  hosts: db_servers
+- name: OpenStack
+  hosts: localhost
   vars_files:
-    - variables/variables.yaml
+    - vars/openstack.yaml
   gather_facts: true
   roles:
-    - role: openstack-common
+    # - role: openstack-common
+    # - role: openstack-volume
+    # - role: openstack-security-group
+    - role: openstack-instance
+
+- name: CouchDB
+  hosts: db_servers
+  vars_files:
+    - vars/couchdb.yaml
+  gather_facts: true
+  roles:
+    # - role: couchdb-common
+    # - role: couchdb-volume
+    # - role: couchdb-docker
+    - role: couchdb-couchdb
+...
+
 

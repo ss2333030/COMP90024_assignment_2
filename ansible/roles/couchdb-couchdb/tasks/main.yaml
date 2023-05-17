@@ -1,0 +1,75 @@
+---
+- name: Create a volume
+  become: true
+  community.docker.docker_volume:
+    name: couchdb
+    state: present
+  register: volume_result
+
+- name: Print out debugging information
+  ansible.builtin.debug:
+    msg: "{{ volume_result }}"
+
+- name: Print out debugging information
+  ansible.builtin.debug:
+    msg: "{{ansible_nodename}} {{ ansible_default_ipv4.address | string }} {{ groups['db_servers'] | difference([ansible_default_ipv4.address]) }} {{ groups['db_servers'] | length }}" 
+
+- name: Create a couchdb container
+  become: true
+  community.docker.docker_container:
+    name: "couchdb"
+    image: ibmcom/couchdb3:3.2.1
+    mounts:
+      - type: volume
+        target: /opt/couchdb/data
+        source: couchdb
+    env:
+      COUCHDB_USER: "admin"
+      COUCHDB_PASSWORD: "password"
+      COUCHDB_SECRET: "a192aeb9904e6590849337933b000c99"
+      ERL_FLAGS: "-setcookie \"a192aeb9904e6590849337933b000c99\" -name \"couchdb@{{ ansible_default_ipv4.address | string }}\""
+    ports:
+      - "5984:5984"
+      - "4369:4369"
+      - "9100:9100"
+    detach: true
+    state: started
+
+- name: Configure cluster
+  become: true
+  ansible.builtin.uri:
+    url: "http://{{ ansible_default_ipv4.address | string }}:5984/_cluster_setup"
+    user: admin
+    password: password
+    force_basic_auth : true
+    method: POST
+    status_code: 201
+    body_format: json
+    body: "{\"action\": \"enable_cluster\", \"bind_address\":\"0.0.0.0\",\"username\": \"admin\", \"password\":\"password\", \"port\": \"5984\",\"remote_node\": \"{{ item }}\", \"node_count\": \"{{ groups['db_servers'] | length }}\",\"remote_current_user\":\"admin\", \"remote_current_password\":\"password\"}"
+  loop: "{{ groups['db_servers'] | difference([ansible_default_ipv4.address]) }}"
+  when: ansible_nodename == "node-1"
+
+- name: Configure cluster2
+  ansible.builtin.uri:
+    url: "http://{{ ansible_default_ipv4.address | string }}:5984/_cluster_setup"
+    user: admin
+    password: password
+    force_basic_auth : true
+    method: POST
+    status_code: 201
+    body_format: json
+    body:  "{\"action\": \"add_node\", \"host\":\"{{ item }}\",\"port\": \"5984\", \"username\": \"admin\", \"password\":\"password\"}"
+  loop: "{{ groups['db_servers'] | difference([ansible_default_ipv4.address]) }}"
+  when: ansible_nodename == "node-1"
+
+- name: Configure cluster3
+  ansible.builtin.uri:
+    url: http://{{ ansible_default_ipv4.address | string }}:5984/_cluster_setup
+    user: admin
+    password: password
+    force_basic_auth : true
+    method: POST
+    status_code: 409
+    body_format: json
+    body:  "{\"action\": \"finish_cluster\"}"
+  when: ansible_nodename == "node-1"

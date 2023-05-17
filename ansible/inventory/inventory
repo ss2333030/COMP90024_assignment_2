@@ -1,8 +1,5 @@
 [managed_nodes]
-172.26.131.82
-172.26.135.121
-172.26.131.66
-172.26.131.216
+
 
 [managed_nodes:vars]
 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
@@ -10,9 +7,6 @@ ansible_ssh_private_key_file=~/cloud_key.pem
 ansible_user=ubuntu
 
 [db_servers]
-172.26.135.121
-172.26.131.66
-172.26.131.216
 
 [db_servers:vars]
 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
@@ -20,10 +14,15 @@ ansible_ssh_private_key_file=~/cloud_key.pem
 ansible_user=ubuntu
 
 [mastodon_servers]
-172.26.135.121
-172.26.131.66
 
 [mastodon_servers:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+ansible_ssh_private_key_file=~/cloud_key.pem
+ansible_user=ubuntu
+
+[application_servers]
+
+[new_server:vars]
 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 ansible_ssh_private_key_file=~/cloud_key.pem
 ansible_user=ubuntu

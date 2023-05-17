@@ -1,0 +1,24 @@
+---
+- name: Install dependencies
+  become: true
+  ansible.builtin.apt:
+    name: ["e2fsprogs"]   # package for managing ext4 filesystems
+    state: latest
+    install_recommends: false
+    update_cache: true
+
+- name: Make file system
+  become: true
+  community.general.filesystem:
+    fstype: ext4
+    dev: "{{ volume.device }}"
+    state: present
+
+- name: Mount device
+  become: true
+  ansible.posix.mount:
+    path: "{{ volume.mountpoint }}"
+    src: "{{ volume.device }}"
+    fstype: ext4
+    state: mounted
+
