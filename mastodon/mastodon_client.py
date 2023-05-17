@@ -20,6 +20,7 @@ class MyHTMLParser(HTMLParser):
         self.url = ""
         self.tag_present = False
         self.url_present = False
+        self.punctuation_marks = " .?!,;:-()[]{'}\""
 
     def handle_starttag(self, tag, attrs):
         if tag == "a":  # encountered a link tag
@@ -28,7 +29,7 @@ class MyHTMLParser(HTMLParser):
                 if item[0] == "target":
                     is_url = True
                     break
-
+            self.text += "|"
             if is_url:  # this link tag represents a URL
                 self.url_present = True
             else:  # this link tag represents a hashtag
@@ -36,20 +37,23 @@ class MyHTMLParser(HTMLParser):
 
     def handle_data(self, data):
         if self.tag_present:
-            self.text += "|" + data
             if data != "#" and data != " ":
-                self.tag_list.append(data)  # add the hashtag to tag array
+                self.text += data
+                self.tag_list.append(data.strip(self.punctuation_marks).lower())  # add the hashtag to tag array
         elif self.url_present:
-            self.text += "|" + data
+            self.text += data
             self.url += data
         else:
-            self.text += "|" + data
-            self.content_list.append(data)  # add the content string to content array
+            self.text += " " + data
+            temp = filter(lambda s: len(s) != 0 and s.isalpha(), map(lambda s: s.strip(self.punctuation_marks).lower(), data.split()))
+            self.content_list += temp  # add the content string to content array
 
     def handle_endtag(self, tag):
         if tag == "a":
-            self.url_list.append(self.url)
-            self.url = ""
+            self.text += "|"
+            if self.url_present:
+                self.url_list.append(self.url)
+                self.url = ""
             self.tag_present = False
             self.url_present = False
 
@@ -63,24 +67,26 @@ class MyHTMLParser(HTMLParser):
     def get_result(self):
         return {
             "text": self.text,
-            "contents": self.content_list,
+            "tokens": self.content_list,
             "tags": self.tag_list,
             "urls": self.url_list,
         }
 
 
 class MyListener(StreamListener):
-    def __init__(self, db, html_parser):
+    def __init__(self, db, html_parser, coffee_keywords, work_keywords):
         super().__init__()
         self.db = db
         self.html_parser = html_parser
+        self.coffee_keywords = coffee_keywords
+        self.work_keywords = work_keywords
 
     def on_update(self, toot):
         """After getting a post, clean it up, normalize it, process it, and store it in the database."""
-        toot = self.__clean_toot(toot)
-        print(toot, end="\n\n")
-        # toot = self.__process_toot(toot)
-        self.__save_to_db(toot)
+        if toot["language"] == "en":
+            toot = self.__clean_toot(toot)
+            toot = self.__process_toot(toot)
+            self.__save_to_db(toot)
 
     def __clean_toot(self, toot):
         """Cleans the given toot. Keep only necessary fields and transform those fields into desired format."""
@@ -100,12 +106,61 @@ class MyListener(StreamListener):
         return {
             "_id": str(uuid.uuid4()),
             "content": self.html_parser.get_result(),
-            "created_at": created_at
+            "created_at": created_at,
         }
 
-    # def __process_toot(self, toot):
-    #     toot["relevant"] = True
-    #     return toot
+    def __process_toot(self, toot):
+        toot["mentions_coffee"] = self.__mentions_coffee(toot)
+        toot["mentions_work"] = self.__mentions_work(toot)
+        if toot["mentions_work"]:
+            toot["sentiment"] = self.__get_sentiment(toot)
+
+        return toot
+
+    def __mentions_coffee(self, toot):
+        """ Determines whether the given toot mentions coffee or not. """
+        tokens = toot["content"]["tokens"]
+        tags = toot["content"]["tags"]
+
+        mentions_coffee = False
+
+        for tag in tags:
+            if tag in self.coffee_keywords:
+                mentions_coffee = True
+                break
+        
+        if not mentions_coffee: 
+            for token in tokens:
+                if token in self.coffee_keywords:
+                    mentions_coffee = True
+                    break
+
+        return mentions_coffee
+
+    def __mentions_work(self, toot):
+        """ Determines whether the given toot mentions work or not. """
+        tokens = toot["content"]["tokens"]
+        tags = toot["content"]["tags"]
+
+        mentions_work = False
+
+        for tag in tags:
+            if tag in self.work_keywords:
+                mentions_work = True
+                break
+        
+        if not mentions_work: 
+            for token in tokens:
+                if token in self.work_keywords:
+                    mentions_work = True
+                    break
+
+        return mentions_work
+
+    def __get_sentiment(self, toot):
+        # TO DO
+        return 1
+
 
     def __save_to_db(self, toot):
         """Saves the given post to database according to its relevance."""
@@ -115,16 +170,25 @@ class MyListener(StreamListener):
 
 
 def main():
-    # Reads configuration information
+    # Reads files
     config_file = None
+    coffee_keyword_file = None
+    work_keyword_file = None
     try:
         config_file = open(sys.argv[1], "r")
+        coffee_keyword_file = open(sys.argv[2], "r")
+        work_keyword_file = open(sys.argv[3], "r")
     except FileNotFoundError:
         print("The configuration file does not exist.")
         sys.exit(1)
 
     config_info = json.load(config_file)
+    coffee_keywords = json.load(coffee_keyword_file)
+    work_keywords = json.load(work_keyword_file)
+
     config_file.close()
+    coffee_keyword_file.close()
+    work_keyword_file.close()
 
     # Connects to Mastodon server
     mastodon = Mastodon(
@@ -153,7 +217,7 @@ def main():
     mastodon_db = couch["mastodon"]
 
     # Streams Mastodon data
-    mastodon.stream_public(listener=MyListener(mastodon_db, MyHTMLParser()), local=True)
+    mastodon.stream_public(listener=MyListener(mastodon_db, MyHTMLParser(), coffee_keywords, work_keywords), local=True)
 
 
 if __name__ == "__main__":
