@@ -6,7 +6,7 @@ and finally saves the data into a CouchDB database.
 from mastodon import Mastodon, StreamListener
 import json, sys, couchdb, uuid
 from html.parser import HTMLParser
-
+from transformers import pipeline
 
 class MyHTMLParser(HTMLParser):
     """Parses the given HTML text into desired format."""
@@ -173,7 +173,7 @@ class MyListener(StreamListener):
 
 def main():
     # Reads files
-    from transformers import pipeline
+    
     sentiment_pipeline = pipeline("sentiment-analysis")
 
     config_file = None
