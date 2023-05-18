@@ -74,12 +74,13 @@ class MyHTMLParser(HTMLParser):
 
 
 class MyListener(StreamListener):
-    def __init__(self, db, html_parser, coffee_keywords, work_keywords):
+    def __init__(self, db, html_parser, coffee_keywords, work_keywords, sentiment_pipeline):
         super().__init__()
         self.db = db
         self.html_parser = html_parser
         self.coffee_keywords = coffee_keywords
         self.work_keywords = work_keywords
+        self.sentiment_pipeline = sentiment_pipeline
 
     def on_update(self, toot):
         """After getting a post, clean it up, normalize it, process it, and store it in the database."""
@@ -159,7 +160,8 @@ class MyListener(StreamListener):
 
     def __get_sentiment(self, toot):
         # TO DO
-        return 1
+
+        return self.sentiment_pipeline(toot['content']['text'])[0]
 
 
     def __save_to_db(self, toot):
@@ -171,6 +173,9 @@ class MyListener(StreamListener):
 
 def main():
     # Reads files
+    from transformers import pipeline
+    sentiment_pipeline = pipeline("sentiment-analysis")
+
     config_file = None
     coffee_keyword_file = None
     work_keyword_file = None
@@ -217,7 +222,7 @@ def main():
     mastodon_db = couch["mastodon"]
 
     # Streams Mastodon data
-    mastodon.stream_public(listener=MyListener(mastodon_db, MyHTMLParser(), coffee_keywords, work_keywords), local=True)
+    mastodon.stream_public(listener=MyListener(mastodon_db, MyHTMLParser(), coffee_keywords, work_keywords, sentiment_pipeline), local=True)
 
 
 if __name__ == "__main__":
