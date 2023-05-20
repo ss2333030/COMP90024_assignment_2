@@ -1,8 +1,0 @@
-managednodes:
-  hosts:
-    n1:
-      ansible_host: 172.26.135.121
-    n2:
-      ansible_host: 172.26.131.66
-    n3:
-      ansible_host: 172.26.131.216

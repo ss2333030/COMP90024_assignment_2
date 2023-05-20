@@ -4,9 +4,11 @@ from Mastodon API. The Mastodon client first cleans the data, then processes the
 and finally saves the data into a CouchDB database.
 """
 from mastodon import Mastodon, StreamListener
-import json, sys, couchdb, uuid
+import json, sys, couchdb
 from html.parser import HTMLParser
 from transformers import pipeline
+from uuid import uuid4
+
 
 class MyHTMLParser(HTMLParser):
     """Parses the given HTML text into desired format."""
@@ -26,8 +28,8 @@ class MyHTMLParser(HTMLParser):
         if tag == "a":  # encountered a link tag
             is_url = False
             for item in attrs:
-                if item[0] == "target":
-                    is_url = True
+                if item[0] == "target": # this link tag represents a URL
+                    is_url = True 
                     break
             self.text += "|"
             if is_url:  # this link tag represents a URL
@@ -39,13 +41,18 @@ class MyHTMLParser(HTMLParser):
         if self.tag_present:
             if data != "#" and data != " ":
                 self.text += data
-                self.tag_list.append(data.strip(self.punctuation_marks).lower())  # add the hashtag to tag array
+                self.tag_list.append(
+                    data.strip(self.punctuation_marks).lower()
+                )  # add the hashtag to tag array
         elif self.url_present:
             self.text += data
             self.url += data
         else:
             self.text += " " + data
-            temp = filter(lambda s: len(s) != 0 and s.isalpha(), map(lambda s: s.strip(self.punctuation_marks).lower(), data.split()))
+            temp = filter(
+                lambda s: len(s) != 0 and s.isalpha(),
+                map(lambda s: s.strip(self.punctuation_marks).lower(), data.split()),
+            )
             self.content_list += temp  # add the content string to content array
 
     def handle_endtag(self, tag):
@@ -72,9 +79,10 @@ class MyHTMLParser(HTMLParser):
             "urls": self.url_list,
         }
 
-
 class MyListener(StreamListener):
-    def __init__(self, db, html_parser, coffee_keywords, work_keywords, sentiment_pipeline):
+    def __init__(
+        self, db, html_parser, coffee_keywords, work_keywords, sentiment_pipeline
+    ):
         super().__init__()
         self.db = db
         self.html_parser = html_parser
@@ -105,12 +113,14 @@ class MyListener(StreamListener):
         self.html_parser.feed(toot["content"])
 
         return {
-            "_id": str(uuid.uuid4()),
+            "_id": uuid4().hex,
             "content": self.html_parser.get_result(),
             "created_at": created_at,
         }
 
     def __process_toot(self, toot):
+        """ Processes the given toot. """
+
         toot["mentions_coffee"] = self.__mentions_coffee(toot)
         toot["mentions_work"] = self.__mentions_work(toot)
         if toot["mentions_work"]:
@@ -119,7 +129,8 @@ class MyListener(StreamListener):
         return toot
 
     def __mentions_coffee(self, toot):
-        """ Determines whether the given toot mentions coffee or not. """
+        """Determines whether the given toot mentions coffee or not."""
+
         tokens = toot["content"]["tokens"]
         tags = toot["content"]["tags"]
 
@@ -129,8 +140,8 @@ class MyListener(StreamListener):
             if tag in self.coffee_keywords:
                 mentions_coffee = True
                 break
-        
-        if not mentions_coffee: 
+
+        if not mentions_coffee:
             for token in tokens:
                 if token in self.coffee_keywords:
                     mentions_coffee = True
@@ -139,7 +150,8 @@ class MyListener(StreamListener):
         return mentions_coffee
 
     def __mentions_work(self, toot):
-        """ Determines whether the given toot mentions work or not. """
+        """Determines whether the given toot mentions work or not."""
+
         tokens = toot["content"]["tokens"]
         tags = toot["content"]["tags"]
 
@@ -149,8 +161,8 @@ class MyListener(StreamListener):
             if tag in self.work_keywords:
                 mentions_work = True
                 break
-        
-        if not mentions_work: 
+
+        if not mentions_work:
             for token in tokens:
                 if token in self.work_keywords:
                     mentions_work = True
@@ -159,23 +171,19 @@ class MyListener(StreamListener):
         return mentions_work
 
     def __get_sentiment(self, toot):
-        # TO DO
+        """Performs sentiment analysis on the given toot. """
 
-        return self.sentiment_pipeline(toot['content']['text'])[0]
-
+        return self.sentiment_pipeline(toot["content"]["text"])[0]
 
     def __save_to_db(self, toot):
-        """Saves the given post to database according to its relevance."""
-        # if toot["relevant"]:
-        #     del toot["relevant"]
+        """Saves the given post to database."""
+
+        del toot["content"]      # don't need content anymore
         self.db.save(toot)
 
 
 def main():
     # Reads files
-    
-    sentiment_pipeline = pipeline("sentiment-analysis")
-
     config_file = None
     coffee_keyword_file = None
     work_keyword_file = None
@@ -218,12 +226,23 @@ def main():
         + "/"
     )
 
-    # Gets the database named mastodon
+    # Gets the database named mastodon and the sentiment pipeline named sentiment-analysis
     mastodon_db = couch["mastodon"]
+    sentiment_pipeline = pipeline("sentiment-analysis")
+
+    print("The Mastodon client is now streaming data...")
 
     # Streams Mastodon data
-    mastodon.stream_public(listener=MyListener(mastodon_db, MyHTMLParser(), coffee_keywords, work_keywords, sentiment_pipeline), local=True)
-
+    mastodon.stream_public(
+        listener=MyListener(
+            mastodon_db,
+            MyHTMLParser(),
+            coffee_keywords,
+            work_keywords,
+            sentiment_pipeline,
+        ),
+        local=True,
+    )
 
 if __name__ == "__main__":
     main()

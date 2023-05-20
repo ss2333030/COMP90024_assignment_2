@@ -3,6 +3,6 @@
     "access_token": "Y_vzQy6jKnIJ77C43bQZXnzlXWLsjtn5Bd6TvUbiszI",
     "couchdb_username": "admin",
     "couchdb_password": "password",
-    "couchdb_ip_address": "172.26.135.121",
+    "couchdb_ip_address": "172.26.135.111",
     "couchdb_port_number": 5984
 }
