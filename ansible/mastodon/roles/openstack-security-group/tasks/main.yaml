@@ -1,0 +1,24 @@
+---
+- name: Create a security group for mastodon servers
+  openstack.cloud.security_group:
+    name: "{{ mastodon_server_security_group.name }}"
+    description: "{{ mastodon_server_security_group.description }}"
+    state: present
+
+- name: Create a security group name
+  ansible.builtin.set_fact:
+    sg_name: "{{ mastodon_server_security_group.name }}"
+
+- name: Print out debugging information
+  ansible.builtin.debug:
+    msg: "Security group {{ sg_name }} have been created."
+
+- name: Add security group rules to the security group
+  openstack.cloud.security_group_rule:
+    security_group: "{{ mastodon_server_security_group.name }}"
+    protocol: "{{ item.protocol }}"
+    port_range_min: "{{ item.port_range_min }}"
+    port_range_max: "{{ item.port_range_max }}"
+    remote_ip_prefix: "{{ item.remote_ip_prefix }}"
+    state: present
+  loop: "{{ mastodon_server_security_group.rules }}"

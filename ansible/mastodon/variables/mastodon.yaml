@@ -1,0 +1,25 @@
+---
+device: /dev/vdb
+mountpoint: /var/lib/docker/volumes
+repo_directory: /var/lib/docker/volumes/repo
+git_username: ss2333030
+git_password: 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
+
+docker_volume:
+  name: mastodon
+  type: volume
+  target: /mastodon
+
+docker_image:
+  name: mastodon
+  path: /var/lib/docker/volumes/repo/mastodon
+
+docker_container_name: mastodon
+
+mastodon_servers:
+  node-1: 
+    access_token: 7tu0pIwqqf5te_ZRnduAzTD75tZ9b0hMy2vkQTgacR8
+    api_base_url: https://mastodon.social/
+  node-2:
+    access_token: PRYvNMDjNZwMDa87L5PD3KhgcgQlYf7UgtaCiEarrUc
+    api_base_url: https://mstdn.social/

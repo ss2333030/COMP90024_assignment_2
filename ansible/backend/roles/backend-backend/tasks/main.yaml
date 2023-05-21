@@ -1,0 +1,31 @@
+- name: Create a docker volume for the application
+  become: true
+  community.docker.docker_volume:
+    name: "{{ docker_volume.name }}"
+    state: present
+  register: volume_result
+
+- name: Print out debugging information
+  ansible.builtin.debug:
+    msg: "{{ volume_result }}"
+
+- name: Build image using Dockerfile
+  become: true
+  community.docker.docker_image:
+    name: "{{ docker_image.name }}"
+    build:
+      path: "{{ docker_image.path }}"
+    source: build
+    state: present
+
+- name: Run Mastodon client container
+  become: true
+  community.docker.docker_container:
+    name: "{{ docker_container_name }}"
+    image: "{{ docker_image.name }}"
+    mounts:
+      - type: "{{ docker_volume.type }}"
+        target: "{{ docker_volume.target }}"
+        source: "{{ docker_volume.name }}"
+    detach: true
+    state: started

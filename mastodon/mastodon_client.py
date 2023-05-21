@@ -28,8 +28,8 @@ class MyHTMLParser(HTMLParser):
         if tag == "a":  # encountered a link tag
             is_url = False
             for item in attrs:
-                if item[0] == "target": # this link tag represents a URL
-                    is_url = True 
+                if item[0] == "target":  # this link tag represents a URL
+                    is_url = True
                     break
             self.text += "|"
             if is_url:  # this link tag represents a URL
@@ -79,6 +79,7 @@ class MyHTMLParser(HTMLParser):
             "urls": self.url_list,
         }
 
+
 class MyListener(StreamListener):
     def __init__(
         self, db, html_parser, coffee_keywords, work_keywords, sentiment_pipeline
@@ -119,7 +120,7 @@ class MyListener(StreamListener):
         }
 
     def __process_toot(self, toot):
-        """ Processes the given toot. """
+        """Processes the given toot."""
 
         toot["mentions_coffee"] = self.__mentions_coffee(toot)
         toot["mentions_work"] = self.__mentions_work(toot)
@@ -171,14 +172,14 @@ class MyListener(StreamListener):
         return mentions_work
 
     def __get_sentiment(self, toot):
-        """Performs sentiment analysis on the given toot. """
+        """Performs sentiment analysis on the given toot."""
 
         return self.sentiment_pipeline(toot["content"]["text"])[0]
 
     def __save_to_db(self, toot):
         """Saves the given post to database."""
 
-        del toot["content"]      # don't need content anymore
+        del toot["content"]  # don't need content anymore
         self.db.save(toot)
 
 
@@ -243,6 +244,7 @@ def main():
         ),
         local=True,
     )
+
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,32 @@
+# Common variables
+availability_zone: melbourne-qh2-uom
+image: bbaf16f8-2484-48d7-b455-42209cc4b8d2
+key_pair: cloud_key
+network: qh2-uom-internal
+security_group: mastodon_server
+
+# Volume
+volumes:
+  - name: node-1-data
+    size: 100
+  - name: node-2-data
+    size: 100
+
+# Security group
+mastodon_server_security_group:
+  name: mastodon_server
+  description: security group for mastodon servers
+  rules:
+    - protocol: tcp
+      port_range_min: 22
+      port_range_max: 22
+      remote_ip_prefix: 0.0.0.0/0
+
+# Define a list of instances
+instances:
+  - name: node-1
+    volumes: ["node-1-data"]
+    flavor: uom.mse.2c9g
+  - name: node-2
+    volumes: ["node-2-data"]
+    flavor: uom.mse.2c9g

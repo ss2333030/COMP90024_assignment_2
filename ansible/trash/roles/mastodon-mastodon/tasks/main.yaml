@@ -6,12 +6,13 @@
     mode: 0700
     state: directory
 
-- name: Get Mastodon client
-  ansible.builtin.git:
-    repo: "https://github.com/ss2333030/COMP90024_assignment_2"
-    dest: /var/lib/docker/volumes/repo
+# - name: Get Mastodon client from GitHub
+#   become: true
+#   ansible.builtin.git:
+#     repo: "https://ss2333030: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@github.com/ss2333030/COMP90024_assignment_2"
+#     dest: /var/lib/docker/volumes/repo
 
-- name: Create a volume for the application
+- name: Create a docker volume for the application
   become: true
   community.docker.docker_volume:
     name: mastodon
@@ -26,24 +27,23 @@
   ansible.builtin.debug:
     msg: "{{ansible_nodename}} {{ ansible_default_ipv4.address | string }} {{ groups['db_servers'] | difference([ansible_default_ipv4.address]) }} {{ groups['db_servers'] | length }}" 
 
-- name: Build image and with build args
+- name: Build image using Dockerfile
+  become: true
   community.docker.docker_image:
     name: mastodon
     build:
       path: /var/lib/docker/volumes/repo/mastodon
     source: build
-    sttate: present
+    state: present
 
-
-- name: Set up a Mastodon client container
+- name: Run Mastodon client container
   become: true
   community.docker.docker_container:
     name: mastodon
     image: mastodon
     mounts:
       - type: volume
-        target: /repo
+        target: /mastodon
         source: mastodon
-    working_dir: /repo/mastodon
     detach: true
     state: started
