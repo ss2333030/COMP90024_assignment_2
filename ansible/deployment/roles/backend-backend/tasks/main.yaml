@@ -20,14 +20,14 @@
   community.docker.docker_container:
     name: "{{ docker_container.name }}"
     state: absent
-  when: "{{ image_result | length }} > 0"
+  when: image_result | length > 0
 
 - name: Remove the old image
   become: true
   community.docker.docker_image:
     name: "{{ docker_image.name }}"
     state: absent
-  when: "{{ image_result | length }} > 0"
+  when: image_result | length > 0
 
 - name: Build image using Dockerfile
   become: true
