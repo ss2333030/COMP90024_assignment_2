@@ -1,8 +1,9 @@
-FROM python
+FROM python:3
 WORKDIR /mastodon
 COPY . /mastodon
 RUN pip install couchdb;\
     pip install Mastodon.py;\
+    pip install Mastodon.py --upgrade;\
     pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu;\
     pip install transformers;\
     pip install xformers;\
