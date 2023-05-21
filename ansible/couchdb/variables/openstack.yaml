@@ -1,0 +1,49 @@
+# Common variables
+availability_zone: melbourne-qh2-uom
+image: bbaf16f8-2484-48d7-b455-42209cc4b8d2
+key_pair: cloud_key
+network: qh2-uom-internal
+security_group: db_server
+
+# Volume
+volumes:
+  - name: node-1-data
+    size: 100
+  - name: node-2-data
+    size: 100
+  - name: node-3-data
+    size: 100
+
+# Security group
+db_server_security_group:
+  name: db_server
+  description: security group for database servers
+  rules:
+    - protocol: tcp
+      port_range_min: 5984
+      port_range_max: 5984
+      remote_ip_prefix: 0.0.0.0/0
+    - protocol: tcp
+      port_range_min: 4369
+      port_range_max: 4369
+      remote_ip_prefix: 0.0.0.0/0
+    - protocol: tcp
+      port_range_min: 9100
+      port_range_max: 9100
+      remote_ip_prefix: 0.0.0.0/0
+    - protocol: tcp
+      port_range_min: 22
+      port_range_max: 22
+      remote_ip_prefix: 0.0.0.0/0
+
+# Define a list of instances
+instances:
+  - name: node-1
+    volumes: ["node-1-data"]
+    flavor: uom.mse.2c9g
+  - name: node-2
+    volumes: ["node-2-data"]
+    flavor: uom.mse.2c9g
+  - name: node-3
+    volumes: ["node-3-data"]
+    flavor: uom.mse.1c4g
