@@ -232,7 +232,7 @@ def main():
     print("The Mastodon client is now streaming data...")
 
     # Streams Mastodon data
-    mastodon.stream_public(
+    mastodon.stream_local(
         listener=MyListener(
             mastodon_db,
             MyHTMLParser(),
@@ -240,7 +240,6 @@ def main():
             work_keywords,
             sentiment_pipeline,
         ),
-        local=True,
     )
 
 
