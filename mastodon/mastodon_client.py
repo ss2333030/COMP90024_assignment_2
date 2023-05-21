@@ -239,7 +239,7 @@ def main():
             coffee_keywords,
             work_keywords,
             sentiment_pipeline,
-        ),
+        )
     )
 
 
