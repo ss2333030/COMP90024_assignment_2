@@ -210,6 +210,8 @@ def main():
         api_base_url=config_info["api_base_url"],
     )
 
+    print(mastodon.retrieve_mastodon_version())
+
     # Connects to CouchDB
     couch = couchdb.Server(
         "http://"

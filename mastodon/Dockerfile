@@ -3,7 +3,7 @@ WORKDIR /mastodon
 COPY . /mastodon
 RUN pip install couchdb;\
     pip install Mastodon.py;\
-    pip install Mastodon.py --upgrade;\
+    pip install --force-reinstall -v "Mastodon.py==1.8.1";\
     pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu;\
     pip install transformers;\
     pip install xformers;\
