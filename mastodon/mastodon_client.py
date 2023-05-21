@@ -210,10 +210,6 @@ def main():
         api_base_url=config_info["api_base_url"],
     )
 
-    if not mastodon.stream_healthy():
-        print("The streaming API is not usable.")
-        sys.exit(2)
-
     # Connects to CouchDB
     couch = couchdb.Server(
         "http://"
