@@ -223,7 +223,7 @@ def main():
         + "@"
         + config_info["couchdb_ip_address"]
         + ":"
-        + str(config_info["couchdb_port_number"])
+        + config_info["couchdb_port_number"]
         + "/"
     )
 
