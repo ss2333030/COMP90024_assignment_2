@@ -5,15 +5,15 @@
     description: "{{ db_server_security_group.description }}"
     state: present
 
-- name: Create a security group name
+- name: Create a list of security group names
   ansible.builtin.set_fact:
-    sg_name: "{{ db_server_security_group.name }}"
+    sg_names: "{{ sg_names|default([]) + [ db_server_security_group.name ] }}"
 
 - name: Print out debugging information
   ansible.builtin.debug:
-    msg: "Security group {{ sg_name }} have been created."
+    msg: "Security group(s) {{ sg_names }} have been created."
 
-- name: Add security group rules to the security group
+- name: Add security group rules to the security groups
   openstack.cloud.security_group_rule:
     security_group: "{{ db_server_security_group.name }}"
     protocol: "{{ item.protocol }}"

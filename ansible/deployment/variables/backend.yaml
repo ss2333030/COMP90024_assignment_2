@@ -1,0 +1,19 @@
+---
+device: /dev/vdb
+mountpoint: /var/lib/docker/volumes
+repo_directory: /var/lib/docker/volumes/repo
+git_username: ss2333030
+git_password: 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
+
+docker_volume:
+  name: backend
+  type: volume
+  target: /backend
+
+docker_image:
+  name: backend
+  path: /var/lib/docker/volumes/repo/backend
+
+docker_container:
+  name: backend
+  ports: ["80:80"]

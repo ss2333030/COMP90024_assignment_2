@@ -1,0 +1,31 @@
+- name: Checking folders
+  become: true
+  ansible.builtin.stat:
+    path: "{{ repo_directory }}"
+  register: directory_stats
+
+- name: Remove the old repo
+  become: true
+  ansible.builtin.file:
+    path: "{{ repo_directory }}"
+    state: absent
+  when: directory_stats.stat.exists == true
+
+- name: Create a directory for the application
+  become: true
+  ansible.builtin.file:
+    path: "{{ repo_directory }}"
+    recurse: true
+    state: directory
+
+- name: Get Mastodon client from GitHub
+  become: true
+  ansible.builtin.git:
+    repo: "https://{{ git_username }}:{{ git_password }}@github.com/ss2333030/COMP90024_assignment_2"
+    dest: "{{ repo_directory }}"
+
+- name: Configure Mastodon
+  become: true
+  ansible.builtin.template:
+    src: config.json.j2
+    dest: "{{ repo_directory }}/mastodon/config.json"

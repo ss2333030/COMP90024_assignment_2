@@ -55,7 +55,7 @@
     password: "{{ docker_container.env.password }}"
     force_basic_auth : true
     method: POST
-    status_code: 201
+    status_code: [201, 409]
     body_format: json
     body:  "{\"action\": \"add_node\", \"host\":\"{{ item }}\",\"port\": \"5984\", \"username\": \"{{ docker_container.env.user }}\", \"password\":\"{{ docker_container.env.password }}\"}"
   loop: "{{ groups['db_servers'] | difference([ansible_default_ipv4.address]) }}"
@@ -68,7 +68,22 @@
     password: "{{ docker_container.env.password }}"
     force_basic_auth : true
     method: POST
-    status_code: 409
+    status_code: [409,500]
     body_format: json
     body:  "{\"action\": \"finish_cluster\"}"
   when: ansible_nodename == "node-1"
+
+- name: Add new nodes to the cluster
+  ansible.builtin.uri:
+    url: http://{{ ansible_default_ipv4.address | string }}:5984/_node/_local/_nodes/couchdb@{{ item }}
+    user: "{{ docker_container.env.user }}"
+    password: "{{ docker_container.env.password }}"
+    force_basic_auth : true
+    method: PUT
+    status_code: [200,201,409,500]
+    body_format: json
+    body:  "{}"
+  loop: "{{ groups['db_servers'] | difference([ansible_default_ipv4.address]) }}"
+  when: ansible_nodename == "node-1"
+
+

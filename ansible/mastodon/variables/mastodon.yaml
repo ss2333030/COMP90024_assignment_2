@@ -23,3 +23,5 @@ mastodon_servers:
   node-2:
     access_token: PRYvNMDjNZwMDa87L5PD3KhgcgQlYf7UgtaCiEarrUc
     api_base_url: https://mstdn.social/
+  node-5:
+    access_token: 

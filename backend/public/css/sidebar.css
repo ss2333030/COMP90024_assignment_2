@@ -1,0 +1,95 @@
+body{
+    background: rgba(255, 255, 255, 0.2);
+}
+
+aside .sidebar{
+    /* background: rgba(254, 253, 253, 0.2); */
+    border: 1px solid #10558d;
+    height: 100%;
+    padding: 20px 0;
+    transition: all 0.5s ease;
+}
+aside .sidebar .teamLogo{
+    margin-bottom: 30px;
+    text-align: center;
+}
+/* color: indigo; */
+aside .sidebar .teamLogo img{
+    display: block;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+
+aside .sidebar .teamLogo h3{
+    color: #ffffff;
+    margin: 10px 0 5px;
+}
+
+aside .sidebar .teamLogo p{
+    color: rgb(206, 240, 253);
+    font-size: 14px;
+}
+
+aside .sidebar ul li a{
+    display: flex;
+    text-align: center;
+    padding: 13px 10px;
+    font-size: 16px;
+    position: relative;
+    flex-direction: column;
+    text-decoration: none;
+   
+}
+aside .sidebar ul li {
+    margin: 10px 0px;
+    border-bottom: 1px solid white;
+}
+aside .sidebar ul li a .icon{
+    color: #dee4ec;
+    width: 30px;
+    display: inline-block;
+}
+
+aside .sidebar ul li a:hover, aside .sidebar ul li > a{
+    color:white;
+}
+
+aside .sidebar ul li a:hover .icon,
+aside .sidebar ul li a.active .icon{
+    color: #0c7db1;
+}
+
+aside .sidebar ul li a:hover:before,
+aside .sidebar ul li a.active:before{
+    display: block;
+}
+
+aside .section{
+    width: calc(100% - 225px);
+    margin-left: 225px;
+    transition: all 0.5s ease;
+}
+
+aside .section .top_navbar{
+    background: rgb(7, 105, 185);
+    height: 50px;
+    display: flex;
+    align-items: center;
+    padding: 0 30px;
+
+}
+
+aside .section .top_navbar .hamburger a{
+    font-size: 28px;
+    color: #f4fbff;
+}
+
+aside .section .top_navbar .hamburger a:hover{
+    color: #a2ecff;
+}
+
+#census-variable li a:hover {
+    background-color: #ddd;
+}

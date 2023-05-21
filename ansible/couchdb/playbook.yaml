@@ -16,9 +16,20 @@
     - variables/couchdb.yaml
   gather_facts: true
   roles:
-    - role: couchdb-prep
-    - role: couchdb-docker
+    - role: setup-prep
+    - role: setup-docker
     - role: couchdb-couchdb
+
+- name: Mastodon
+  hosts: mastodon_servers
+  vars_files:
+    - variables/mastodon.yaml
+  gather_facts: true
+  roles:
+    - role: setup-prep
+    - role: setup-docker
+    - role: mastodon-get-app
+    - role: mastodon-mastodon
 ...
 
 

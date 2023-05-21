@@ -1,0 +1,67 @@
+<div id="template">
+    {{>aside}}
+    <div id = "analysis">
+        <div>Analysis for Scenario {{num}}</div>
+        <div>Finding for Scenario {{num}}</div>
+        <div id = "myDiv"></div>
+    </div>
+</div>
+
+{{!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> --}}
+
+
+<script type="module">
+    //const queryCouchDBView = require("/api/axios.js")
+    import {queryNegativeForMap, queryBigBForInfo, queryTotBForMap} from "/api/axios.js"
+    queryNegativeForMap()
+    queryBigBForInfo()
+    queryTotBForMap()
+    let entries1;
+    async function logJSONData() {
+        const response = await fetch("https://b9873576-400c-4c6b-90a8-ab24d6c172b5.mock.pstmn.io/getscenraio_"+{{num}});
+        entries1 = await response.json();
+        console.log(entries1);
+        var trace1 = {
+            y: Object.keys(entries1),
+            x: Object.values(entries1),
+            name: 'Mastdon',
+            type: 'bar',
+            orientation:'h',
+        };
+  
+        var trace2 = {
+            y: Object.keys(entries1),
+            x: Object.values(entries1),
+            name: 'Twitter',
+            type: 'bar',
+            orientation :'h',
+        };
+
+        var trace3 = {
+            y: Object.keys(entries1),
+            x: Object.values(entries1),
+            name: 'SUDO',
+            type: 'bar',
+            orientation :'h',
+        };
+        var data = [trace1, trace2,trace3];
+        var layout = {
+            barmode: 'group',
+            title:"Scenraio " + {{num}},
+            autosize: true,
+            height: 500,
+            yaxis: {
+        // title: 'Y-axis Title',
+            automargin: true,
+            titlefont: { size:30 },
+        },
+        };
+        
+        Plotly.newPlot('myDiv', data, layout);
+    }
+    logJSONData()
+    //entries1 = {"New South Wales":80, "Victoria": 50, "Queensland": 20, "South Australia": 69, "Western Australia":80, "Tasmania":5, "Northern Territory":44, "Australian Capital Territory":50}
+    
+  
+  
+</script>

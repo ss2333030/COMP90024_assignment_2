@@ -1,0 +1,40 @@
+<div id="template">
+    {{>aside}}
+    <div id = "content">
+      <div id="controls" class="nicebox">
+        <div id="legend">
+          <div id="census-min">min</div>
+            <div class="color-key"><span id="data-caret">&#x25c6;</span></div>
+          <div id="census-max">max</div>
+        </div>
+          <div id="data-box" class="nicebox">
+            <label id="data-label" for="data-value"></label>
+            <span id="data-value"></span>
+        </div>
+      </div>
+
+      <div id="mapInfo">
+        <div id = "showMap">
+            <div id="map"></div>
+            <div id ="caption">
+              <p>Scenraio 1 </p>
+            </div>
+        </div>
+        <div id="mapData">
+          <div id = "selectData">information of selected area</div>
+        </div>
+      </div>
+    
+      <div id="about">
+        <p>About Scenraio 1</p>
+      </div>
+
+
+    </div>
+</div>
+
+    
+<script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbTncZ7R10mswdhSA__9LaYyF6tohVewU&callback=initMap&v=weekly"
+      defer
+></script>

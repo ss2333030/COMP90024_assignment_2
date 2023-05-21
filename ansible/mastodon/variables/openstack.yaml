@@ -7,9 +7,7 @@ security_group: mastodon_server
 
 # Volume
 volumes:
-  - name: node-1-data
-    size: 100
-  - name: node-2-data
+  - name: node-5-data
     size: 100
 
 # Security group
@@ -24,9 +22,6 @@ mastodon_server_security_group:
 
 # Define a list of instances
 instances:
-  - name: node-1
-    volumes: ["node-1-data"]
-    flavor: uom.mse.2c9g
-  - name: node-2
-    volumes: ["node-2-data"]
-    flavor: uom.mse.2c9g
+  - name: node-5
+    volumes: ["node-5-data"]
+    flavor: uom.mse.1c4g

@@ -1,5 +1,6 @@
 [mastodon_servers]
-
+172.26.135.30
+172.26.130.251
 
 [mastodon_servers:vars]
 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
