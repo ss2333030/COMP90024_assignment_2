@@ -33,6 +33,7 @@
     host: "{{ item }}"
     port: 5984
   loop: "{{ groups['db_servers'] }}"
+  when: ansible_nodename == "node-1"
 
 - name: Configure cluster - step 1
   become: true

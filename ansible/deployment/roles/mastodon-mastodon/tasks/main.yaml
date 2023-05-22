@@ -7,7 +7,7 @@
 - name: Remove container
   become: true
   community.docker.docker_container:
-    name: "{{ docker_container_name }}"
+    name: "{{ docker_container.name }}"
     state: absent
   when: image_result | length > 0
 

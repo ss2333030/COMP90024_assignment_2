@@ -18,10 +18,23 @@ docker_container_name: mastodon
 
 mastodon_servers:
   node-1: 
-    access_token: 7tu0pIwqqf5te_ZRnduAzTD75tZ9b0hMy2vkQTgacR8
-    api_base_url: https://mastodon.social/
+    access_token: "7tu0pIwqqf5te_ZRnduAzTD75tZ9b0hMy2vkQTgacR8"
+    api_base_url: "https://mastodon.social/"
   node-2:
-    access_token: PRYvNMDjNZwMDa87L5PD3KhgcgQlYf7UgtaCiEarrUc
-    api_base_url: https://mstdn.social/
+    access_token: "PRYvNMDjNZwMDa87L5PD3KhgcgQlYf7UgtaCiEarrUc"
+    api_base_url: "https://mstdn.social/"
   node-5:
-    access_token: 
+    access_token: "p0M7eJ5JFGEwnjqjRF2MEaeeVAi3JT3Y8Znj2dVuQ80"
+    api_base_url: "https://mastodon.online/"
+
+couchdb:
+  username: admin
+  password: password
+  ip_address: "172.26.135.30"
+  port_number: "5984"
+
+
+
+
+
+

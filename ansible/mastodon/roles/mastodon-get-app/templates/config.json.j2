@@ -1,8 +1,8 @@
 {
-    "api_base_url": "{{ mastodon_servers[ansible_facts['nodename']].api_base_url }}",
-    "access_token": "{{ mastodon_servers[ansible_facts['nodename']].access_token }}",
-    "couchdb_username": "admin",
-    "couchdb_password": "password",
-    "couchdb_ip_address": "{{ groups['db_servers'][0] }}",
-    "couchdb_port_number": 5984
+    "api_base_url": "{{ mastodon_servers[ansible_nodename].api_base_url }}",
+    "access_token": "{{ mastodon_servers[ansible_nodename].access_token }}",
+    "couchdb_username": "{{ couchdb.username }}",
+    "couchdb_password": "{{ couchdb.password }}",
+    "couchdb_ip_address": "{{ couchdb.ip_address }}",
+    "couchdb_port_number": "{{ couchdb.port_number }}"
 }

@@ -4,13 +4,19 @@
     path: "{{ repo_directory }}"
   register: directory_stats
 
+- name: Remove the old repo
+  become: true
+  ansible.builtin.file:
+    path: "{{ repo_directory }}"
+    state: absent
+  when: directory_stats.stat.exists == true
+
 - name: Create a directory for the application
   become: true
   ansible.builtin.file:
     path: "{{ repo_directory }}"
     recurse: true
     state: directory
-  when: directory_stats.stat.exists == false
 
 - name: Get Mastodon client from GitHub
   become: true
@@ -23,3 +29,5 @@
   ansible.builtin.template:
     src: config.json.j2
     dest: "{{ repo_directory }}/mastodon/config.json"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"

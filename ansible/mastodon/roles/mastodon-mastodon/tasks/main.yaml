@@ -1,3 +1,29 @@
+- name: Check if the image already exists
+  become: true
+  community.docker.docker_image_info:
+    name: "{{ docker_image.name }}"
+  register: image_result
+
+- name: Remove container
+  become: true
+  community.docker.docker_container:
+    name: "{{ docker_container.name }}"
+    state: absent
+  when: image_result | length > 0
+
+- name: Remove the old image
+  become: true
+  community.docker.docker_image:
+    name: "{{ docker_image.name }}"
+    state: absent
+  when: image_result | length > 0
+
+- name: Remove old docker volume
+  become: true
+  community.docker.docker_volume:
+    name: "{{ docker_volume.name }}"
+    state: absent
+
 - name: Create a docker volume for the application
   become: true
   community.docker.docker_volume:
@@ -8,26 +34,6 @@
 - name: Print out debugging information
   ansible.builtin.debug:
     msg: "{{ volume_result }}"
-
-- name: Check if the image already exists
-  become: true
-  community.docker.docker_image_info:
-    name: "{{ docker_image.name }}"
-  register: image_result
-
-- name: Remove container
-  become: true
-  community.docker.docker_container:
-    name: "{{ docker_container_name }}"
-    state: absent
-  when: "{{ image_result | length }} > 0"
-
-- name: Remove the old image
-  become: true
-  community.docker.docker_image:
-    name: "{{ docker_image.name }}"
-    state: absent
-  when: "{{ image_result | length }} > 0"
 
 - name: Build image using Dockerfile
   become: true

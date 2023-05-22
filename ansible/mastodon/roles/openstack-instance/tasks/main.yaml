@@ -8,7 +8,7 @@
     image: "{{ image }}" 
     key_name: "{{ key_pair }}" 
     network: "{{ network }}"    
-    security_groups: "{{ security_group }}" 
+    security_groups: "{{ item.security_groups }}" 
     timeout: 600
     volumes: "{{ item.volumes }}" 
     state: present
