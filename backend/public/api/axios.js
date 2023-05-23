@@ -3,8 +3,8 @@ import axios from 'https://cdn.jsdelivr.net/npm/axios@1.3.5/+esm';
 // Function to query the twitter data for map in coffee scenario
 async function queryCoffeeForMap() {
   try {
-      const coffeeTwitter = await axios.get('http://localhost:8080/coffee/twitter')
-      const coffeeLGA = await axios.get('http://localhost:8080/coffee/lga')
+      const coffeeTwitter = await axios.get('/coffee/twitter')
+      const coffeeLGA = await axios.get('/coffee/lga')
       await calPercent(coffeeTwitter, coffeeLGA)
       return calDiff(coffeeLGA.data.rows, await queryTotBForMap())
       } catch (error) {
@@ -15,8 +15,8 @@ async function queryCoffeeForMap() {
 // Function to query the twitter data for analysis bar chart in coffee scenario
 async function queryCoffeeForAnalysis() {
   try {
-      const coffeeTwitter = await axios.get('http://localhost:8080/coffee/twitter')
-      const coffeeState = await axios.get('http://localhost:8080/coffee/state')
+      const coffeeTwitter = await axios.get('/coffee/twitter')
+      const coffeeState = await axios.get('/coffee/state')
       await calPercent(coffeeTwitter, coffeeState)
       return coffeeState.data.rows
       } catch (error) {
@@ -27,8 +27,8 @@ async function queryCoffeeForAnalysis() {
 // Function to query the twitter data for mastodon comparison in coffee scenario
 async function queryCoffeeForMast() {
   try {
-    const total = await axios.get('http://localhost:8080/coffee/twitter')
-    const coffeeMast = await axios.get('http://localhost:8080/coffee/mast')
+    const total = await axios.get('/coffee/twitter')
+    const coffeeMast = await axios.get('/coffee/mast')
     console.log("total:", total)
     return coffeeMast.data.rows[0].value / total.data.rows[0].value 
     } catch (error) {
@@ -40,7 +40,7 @@ async function queryCoffeeForMast() {
 async function queryNegaForMast() {
   try {
     const total = await queryWorkForMast()
-    const NegaMast = await axios.get('http://localhost:8080/negative/twitter')
+    const NegaMast = await axios.get('/negative/twitter')
     return NegaMast.data.rows[0].value / total
     } catch (error) {
       console.error(error);
@@ -50,7 +50,7 @@ async function queryNegaForMast() {
 // Function to query the work twitter data for mastodon comparison in negative scenario
 async function queryWorkForMast() {
   try {
-      const work  = await axios.get('http://localhost:8080/work/twitter')
+      const work  = await axios.get('/work/twitter')
       return work.data.rows[0].value
   } catch (error) {
     console.error(error);
@@ -60,8 +60,8 @@ async function queryWorkForMast() {
 // Function to query the twitter data for map in negative scenario
 async function queryNegativeForMap() {
   try {
-      const negativeLGA = await axios.get('http://localhost:8080/negative/lga')
-      const negativeTotal = await axios.get('http://localhost:8080/negative/twitter')
+      const negativeLGA = await axios.get('/negative/lga')
+      const negativeTotal = await axios.get('/negative/twitter')
       await calPercent(negativeTotal, negativeLGA)
       return calDiff(negativeLGA.data.rows, await queryTotBForMap())
   } catch (error) {
@@ -72,8 +72,8 @@ async function queryNegativeForMap() {
 // Function to query the twitter data for analysis bar chart in negative scenario
 async function queryNegativeForAnalysis() {
   try {
-      const negativeState = await axios.get('http://localhost:8080/negative/state')
-      const negativeTotal = await axios.get('http://localhost:8080/negative/twitter')
+      const negativeState = await axios.get('/negative/state')
+      const negativeTotal = await axios.get('/negative/twitter')
       await calPercent(negativeTotal, negativeState)
       return negativeState.data.rows
   } catch (error) {
@@ -84,8 +84,8 @@ async function queryNegativeForAnalysis() {
 // Function to query the twitter data for map in entertainment scenario
 async function queryEntertainmentForMap() {
   try {
-      const entertainmentLGA = await axios.get('http://localhost:8080/enter/lga')
-      const entertainmentTotal = await axios.get('http://localhost:8080/enter/twitter')
+      const entertainmentLGA = await axios.get('/enter/lga')
+      const entertainmentTotal = await axios.get('/enter/twitter')
       await calPercent(entertainmentTotal, entertainmentLGA)
       return calDiff(entertainmentLGA.data.rows, await queryTotBForMap())
   } catch (error) {
@@ -97,8 +97,8 @@ async function queryEntertainmentForMap() {
 // Function to query the twitter data for analysis bar chart in entertainment scenario
 async function queryEntertainmentForAnalysis() {
   try {
-      const entertainmentState = await axios.get('http://localhost:8080/enter/state')
-      const entertainmentTotal = await axios.get('http://localhost:8080/enter/twitter')
+      const entertainmentState = await axios.get('/enter/state')
+      const entertainmentTotal = await axios.get('/enter/twitter')
       await calPercent(entertainmentTotal, entertainmentState)
       return entertainmentState.data.rows
   } catch (error) {
@@ -110,8 +110,8 @@ async function queryEntertainmentForAnalysis() {
 //Function returning the percentage of the number of business in each area to the total number of business in all areas
 async function queryTotBForMap() {
   try {
-    const totalBLGA = await axios.get('http://localhost:8080/sudo/total')
-    const totalB = await axios.get('http://localhost:8080/sudo/sum')
+    const totalBLGA = await axios.get('/sudo/total')
+    const totalB = await axios.get('/sudo/sum')
     await calPercent(totalB, totalBLGA)
     return totalBLGA.data.rows
   } catch (error) {
@@ -122,8 +122,8 @@ async function queryTotBForMap() {
 //Function returning the percentage of the number of business in each state
 async function queryTotBForAnalysis() {
   try {
-    const totalBState = await axios.get('http://localhost:8080/sudo/total/state')
-    const totalB = await axios.get('http://localhost:8080/sudo/sum')
+    const totalBState = await axios.get('/sudo/total/state')
+    const totalB = await axios.get('/sudo/sum')
     await calPercent(totalB, totalBState)
     return totalBState.data.rows
   } catch (error) {
@@ -134,7 +134,7 @@ async function queryTotBForAnalysis() {
 //Function returning the percentage of the number of empl20plus business in each LGA
 async function queryBigBForInfo() {
   try {
-    const bigBLGA = await axios.get('http://localhost:8080/sudo/big')
+    const bigBLGA = await axios.get('/sudo/big')
     const convertedList = bigBLGA.data.rows.map(obj => ({[obj.key]: obj.value}));
     return convertedList
   } catch (error) {
@@ -145,7 +145,7 @@ async function queryBigBForInfo() {
 //Function returning the percentage of the number of empl20plus business in each state
 async function queryBigBForAnalysis() {
   try {
-    const bigBState = await axios.get('http://localhost:8080/sudo/big/state')
+    const bigBState = await axios.get('/sudo/big/state')
     const convertedList = bigBState.data.rows.map(obj => ({[obj.key]: obj.value}));
     return convertedList
   } catch (error) {
@@ -156,7 +156,7 @@ async function queryBigBForAnalysis() {
 //Function returning the percentage of the number of empl119 business in each LGA
 async function querySmallBForInfo() {
   try {
-    const smallBLGA = await axios.get('http://localhost:8080/sudo/small')
+    const smallBLGA = await axios.get('/sudo/small')
     const convertedList = smallBLGA.data.rows.map(obj => ({[obj.key]: obj.value}));
     return convertedList
   } catch (error) {
@@ -168,7 +168,7 @@ async function querySmallBForInfo() {
 //Function returning the percentage of the number of empl119plus business in each state
 async function querySmallBForAnalysis() {
   try {
-    const smallBState= await axios.get('http://localhost:8080/sudo/small/state')
+    const smallBState= await axios.get('/sudo/small/state')
     const convertedList = smallBState.data.rows.map(obj => ({[obj.key]: obj.value}));
     return convertedList
   } catch (error) {
@@ -179,7 +179,7 @@ async function querySmallBForAnalysis() {
 //Function returning the percentage of the business SD in each LGA
 async function queryBSD() {
   try {
-    const busiSD = await axios.get('http://localhost:8080/sudo/bSD')
+    const busiSD = await axios.get('/sudo/bSD')
     const convertedList = busiSD.data.rows.map(obj => ({[obj.key]: obj.value}));
     return convertedList
   } catch (error) {
@@ -190,7 +190,7 @@ async function queryBSD() {
 //Function returning the percentage of the business SD in each state
 async function queryBSDForAnalysis() {
   try {
-    const busiSDState = await axios.get('http://localhost:8080/sudo/bSD/state')
+    const busiSDState = await axios.get('/sudo/bSD/state')
     const convertedList = busiSDState.data.rows.map(obj => ({[obj.key]: obj.value}));
     return convertedList
   } catch (error) {
@@ -201,7 +201,7 @@ async function queryBSDForAnalysis() {
 // Query for Mastodon data about coffee
 async function queryMastodonCoffee() {
   try {
-    const mastCoffee = await axios.get('http://localhost:8080/mast/coffee')
+    const mastCoffee = await axios.get('/mast/coffee')
     let total = await queryMastodonTotal()
     let coffee = mastCoffee.data.rows[0].value
     total = total.data.rows[0].value
@@ -214,7 +214,7 @@ async function queryMastodonCoffee() {
 // Query for Mastodon data of number of total posts
 async function queryMastodonTotal() {
   try {
-    const mastTotal = await axios.get('http://localhost:8080/mast/total')
+    const mastTotal = await axios.get('/mast/total')
     return mastTotal
   } catch (error) {
     console.error(error);
@@ -225,7 +225,7 @@ async function queryMastodonTotal() {
 // Query for Mastodon data about negative work attitude
 async function queryMastodonNega() {
   try {
-    const mastNega = await axios.get('http://localhost:8080/mast/nega')
+    const mastNega = await axios.get('/mast/nega')
     return mastNega.data.rows[0].value / await queryMastodonWork()
 
   } catch (error) {
@@ -236,7 +236,7 @@ async function queryMastodonNega() {
 // Query for Mastodon data about work 
 async function queryMastodonWork() {
   try {
-    const mastWork = await axios.get('http://localhost:8080/mast/work')
+    const mastWork = await axios.get('/mast/work')
     return mastWork.data.rows[0].value
   } catch (error) {
     console.error(error);
