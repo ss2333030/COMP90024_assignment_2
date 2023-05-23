@@ -16,4 +16,4 @@ docker_image:
 
 docker_container:
   name: backend
-  ports: ["8080:80"]
+  ports: ["80:80"]
