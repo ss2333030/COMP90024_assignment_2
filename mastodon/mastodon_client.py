@@ -231,7 +231,7 @@ def main():
     print("The Mastodon client is now streaming data...")
 
     # Streams Mastodon data
-    mastodon.stream_local(MyListener(mastodon_db, MyHTMLParser(), coffee_keywords, work_keywords, sentiment_pipeline))
+    mastodon.stream_public(MyListener(mastodon_db, MyHTMLParser(), coffee_keywords, work_keywords, sentiment_pipeline), local=True)
 
 
 if __name__ == "__main__":
