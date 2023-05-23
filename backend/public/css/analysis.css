@@ -1,0 +1,27 @@
+/* #analysis{
+    display: flex;
+    justify-content: center;
+} */
+#myDiv{
+    display: flex;
+    justify-content: center;
+}
+#analysisDetail{
+    margin: 3vh;
+    text-align: center;
+}
+#mastodon{
+    overflow:scroll;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+/* .compare{
+    display: flex;
+    align-items: center;
+} */
+#hypo{
+
+    font-family: fantasy;
+
+}

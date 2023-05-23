@@ -1,6 +1,9 @@
 body{
   background: linear-gradient(#e66465,10%, #9198e5);
 }
+*{
+  font-family: auto;
+}
 
 #template, #analysis{
   background: rgba(254, 253, 253, 0.2);
@@ -35,6 +38,7 @@ table thead th{
     /* background-color: #04AA6D; */
     color: white;
 }
+
 /* table, th, td {
     border: 1px solid black;
   } */

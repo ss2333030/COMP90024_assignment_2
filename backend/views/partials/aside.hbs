@@ -3,7 +3,7 @@
         <div class="sidebar">
            <!--profile image & text-->
             <div class="teamLogo">
-                <img src="/img/logo.png" alt="logo">
+                <a href ="/"><img src="/img/logo.png" alt="logo"></a>
                 <h3>CCCPro</h3>
                 <p>Design Team</p>
             </div>
@@ -15,41 +15,58 @@
                     </a>
                 </li> --}}
                 <li>
-                    <a href="/map#" class="active map" value = "coffee">
+                    <a href="/map/coffee" class="active map cur" value = "coffee">
                         <span class="icon"><i class="fas fa-home"></i></span>
                         <span class="item">Scenario 1: Coffee</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/analysis/1" class="active analysis">
+                    <a href="/analysis/coffee" class="active analysis">
                         <span class="icon"><i class="fas fa-home"></i></span>
                         <span class="item">Coffee: Analysis</span>
                     </a>
                 </li>
                  <li>
-                    <a href="/map#" class="active map" value = "negative">
+                    <a href="/map/negativeemotion" class="active map" value = "negative">
                         <span class="icon"><i class="fas fa-home"></i></span>
                         <span class="item">Scenario 2: Negative emotion</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/analysis/2" class="active analysis">
+                    <a href="/analysis/negativeemotion" class="active analysis">
                         <span class="icon"><i class="fas fa-home"></i></span>
                         <span class="item">Negative Word: Analysis</span>
                     </a>
                 </li>
                  <li>
-                    <a href="/map#" class="active map" value = "entertainment">
+                    <a href="/map/entertainment" class="active map" value = "entertainment">
                         <span class="icon"><i class="fas fa-home"></i></span>
                         <span class="item">Scenario 3: Entertainment</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/analysis/3" class="active analysis">
+                    <a href="/analysis/entertainment" class="active analysis">
                         <span class="icon"><i class="fas fa-home"></i></span>
                         <span class="item">Entertainment: Analysis</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/mastodon" class="active">
+                        <span class="icon"><i class="fas fa-home"></i></span>
+                        <span class="item">Real Time Mastodon</span>
                     </a>
                 </li>
             </ul>
         </div>
     </aside>
+<script>
+ let map = document.querySelectorAll(".map")
+ for(let i =0; i<map.length;i++){
+     map[i].addEventListener("click",()=>{
+         console.log(map[i])
+        let target = document.querySelector(".cur")
+         target.classList.remove("cur")
+         map[i].classList.add("cur")
+     })
+ }
+</script>

@@ -3,9 +3,9 @@
     <div id = "content">
       <div id="controls" class="nicebox">
         <div id="legend">
-          <div id="census-min">min</div>
+          <div id="census-min">MIN</div>
             <div class="color-key"><span id="data-caret">&#x25c6;</span></div>
-          <div id="census-max">max</div>
+          <div id="census-max">MAX</div>
         </div>
           <div id="data-box" class="nicebox">
             <label id="data-label" for="data-value"></label>
@@ -13,28 +13,38 @@
         </div>
       </div>
 
-      <div id="mapInfo">
+      <div id="mapInfo" value = {{id}}>
         <div id = "showMap">
             <div id="map"></div>
             <div id ="caption">
-              <p>Scenraio 1 </p>
+              <p>Scenraio {{id}} </p>
             </div>
         </div>
         <div id="mapData">
-          <div id = "selectData">information of selected area</div>
+            <h3>Information of selected area</h3>
+            <div id="totalB">
+              <div>Business Level</div>
+              <span></span>
+            </div>
+            <div id ="bigB">
+              <div>Large Business Percentage</div>
+              <span></span>
+              </div>
+            <div id ="smallB">
+              <div>Small Business Percentage</div>
+              <span></span>
+            </div>
         </div>
       </div>
     
       <div id="about">
-        <p>About Scenraio 1</p>
+        <div><h3>Hypothesis of Scenraio{{id}}</h3></div>
+        <div id ="hypo">{{showContentById id}}</div>
       </div>
 
 
     </div>
 </div>
 
-    
-<script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbTncZ7R10mswdhSA__9LaYyF6tohVewU&callback=initMap&v=weekly"
-      defer
-></script>
+
+<script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbTncZ7R10mswdhSA__9LaYyF6tohVewU&callback=initMap&v=weekly"></script>

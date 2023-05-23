@@ -1,6 +1,4 @@
-import {queryCoffeeForMap,queryNegativeForMap,queryEntertainmentForMap} from "../api/axios.js"
-
-// import {mapFeature} from "../js/helper.js"
+import {queryCoffeeForMap,queryNegativeForMap,queryEntertainmentForMap,queryBSD,querySmallBForInfo,queryBigBForInfo} from "../api/axios.js"
 
 
 // map feature
@@ -22,9 +20,11 @@ const mapStyle = [
 
 let map;
 
-// let censusMin = Number.MAX_VALUE,
-//   censusMax = -Number.MAX_VALUE;
+// find the maxmium census Max
+let censusMax = -Number.MAX_VALUE
 
+
+// will call initMap to show the data once the api is done
 function initMap() {
   
   // load the map
@@ -38,17 +38,15 @@ function initMap() {
   map.data.setStyle(styleFeature);
   map.data.addListener("mouseover", mouseInToRegion);
   map.data.addListener("mouseout", mouseOutOfRegion);
-
   // update map according to the scenario
-  const selectBox = document.getElementsByClassName("map")
 
   // add event listener to update data
-  for (let i = 0; i <selectBox.length;i++){
-    google.maps.event.addDomListener(selectBox[i], "click", () => {
-      loadCensusData(selectBox[i].getAttribute("value"));
-    });
-  }
+  const selectBox = document.getElementById("mapInfo")
 
+  window.addEventListener("load",()=>{
+    console.log("select:", selectBox.getAttribute("value"))
+    loadCensusData(selectBox.getAttribute("value"));
+  })
   // state polygons only need to be loaded once, do them now
   loadMapShapes();
 
@@ -60,7 +58,7 @@ function loadMapShapes() {
     "/data/aus_lga.geojson",
     { idPropertyName: "Name" }
   )
-  // console.log(mao.dta.getFeatureById)
+
   // wait for the request to complete by listening for the first feature to be
   // added
   google.maps.event.addListenerOnce(map.data, "addfeature", () => {
@@ -80,50 +78,69 @@ function loadMapShapes() {
 async function loadCensusData(scenario) {
   // load the requested variable from the census API (using local copies)
   let response;
-  if (scenario == "coffee"){
+  let businessFeature = await generateBusiness()
+  // get scenario data upon on page
+  if (scenario == "1"){
     response = await queryCoffeeForMap()
+    console.log("response1: ", response)
   }
-  else if(scenario == "negative"){
+  else if(scenario == "2"){
     response = await queryNegativeForMap()
+    console.log("response2: ", response)
   }
-  else if (scenario == "entertainment"){
+  else if (scenario == "3"){
     response = await queryEntertainmentForMap()
+    console.log("response3: ", response)
   }
-  console.log("uphair")
-  let dataFeature = []
-  for(let key in response){
-    dataFeature.push(response[key].key)
-    let state = await map.data.getFeatureById(response[key].key)
+  // data from couchdb, record all region with data
+  let dataFeature = Object.keys(response)
+
+  // update the region value with data
+  for (const [key, value] of Object.entries(response)) {
+    let state = await map.data.getFeatureById(key)
+    if (state) {
+      // get min value and max value
+      let censusVariable = value
+      if (censusVariable > censusMax) {
+        censusMax = censusVariable;
+      }
+      state.setProperty("census_variable", value);
+    }
+}
+  for (const [key, value] of Object.entries(response)) {
+      let state = await map.data.getFeatureById(key)
       if (state) {
-        state.setProperty("census_variable", response[key].value);
+        // get min value and max value
+        let censusVariable = value
+        if (censusVariable > censusMax) {
+          censusMax = censusVariable;
+        }
+        state.setProperty("census_variable", value);
       }
   }
-  let a = await generateMapFeature()
-  console.log("data: ",a )
-  const left = findArrayDifference(dataFeature,a)
-  console.log(left)
-  for(let key in left){
-    console.log("left: ",left[key])
-    let state = await map.data.getFeatureById(left[key])
+  // data from geojson, record all region in the map
+  let mapFeature = await generateMapFeature()
+  console.log("map; ",mapFeature)
+  console.log("business: ", businessFeature)
+
+  let unassign = mapFeature.filter(key => !dataFeature.includes(key))
+  let unvisited = mapFeature.filter(key => !businessFeature.includes(key))
+
+  console.log("un", unvisited)
+  for(let key in unvisited){
+    let state = await map.data.getFeatureById(unvisited[key])
       if (state) {
-        console.log("state: ",state)
+        state.setProperty("businessLevel", 0);
+        state.setProperty("smallBusiness", 0);
+        state.setProperty("bigBusiness", 0);
+      }
+  }
+  for(let key in unassign){
+    let state = await map.data.getFeatureById(unassign[key])
+      if (state) {
         state.setProperty("census_variable", 0);
       }
   }
-  
-      
-
-}
-
-/** Removes census data from each shape on the map and resets the UI. */
-function clearCensusData() {
-  censusMin = Number.MAX_VALUE;
-  censusMax = -Number.MAX_VALUE;
-  map.data.forEach((row) => {
-    row.setProperty("census_variable", undefined);
-  });
-  document.getElementById("data-box").style.display = "none";
-  document.getElementById("data-caret").style.display = "none";
 }
 
 /**
@@ -134,16 +151,12 @@ function clearCensusData() {
  * @param {google.maps.Data.Feature} feature
  */
 function styleFeature(feature) {
-  const low = [5, 69, 54]; // color of smallest datum
-  const high = [151, 83, 34]; // color of largest datum
-  // delta represents where the value sits between the min and max
-  const censusMax = 100;
-  const censusMin = 10;
+  // background: linear-gradient(to left, hsl(243.333, 100%, 7%), hsl(248.571, 86%, 26%), hsl(190.118, 100%, 50%) );
+  const low = [190, 100, 50]; // color of smallest datum
+  const high = [243, 100, 7]; // color of largest datum
   const delta =
-    (feature.getProperty("census_variable") - censusMin) /
-    (censusMax - censusMin);
+    (feature.getProperty("census_variable"));
   const color = [];
-
   for (let i = 0; i < 3; i++) {
     // calculate an integer color based on the delta
     color.push((high[i] - low[i]) * delta + low[i]);
@@ -167,7 +180,7 @@ function styleFeature(feature) {
   }
   return {
     strokeWeight: outlineWeight,
-    strokeColor: "#green",
+    strokeColor: "black",
     zIndex: zIndex,
     fillColor: "hsl(" + color[0] + "," + color[1] + "%," + color[2] + "%)",
     fillOpacity: 0.75,
@@ -178,20 +191,20 @@ function styleFeature(feature) {
 /**
  * Responds to the mouse-in event on a map shape (state).
  *
- * @param {?google.maps.MapMouseEvent} e
+ * @param {?google.maps.MapMouseEvent} 
  */
 function mouseInToRegion(e) {
-  const censusMax = 1000;
-  const censusMin = 0;
+  // const censusMax = 1;
+  // const censusMin = 0;
   // set the hover state so the setStyle function can change the border
   e.feature.setProperty("state", "hover");
   // console.log("cen:", e.feature.getProperty("census_variable"));
   let percent =
-    100*((e.feature.getProperty("census_variable") - censusMin)/(censusMax-censusMin))
+    100*((e.feature.getProperty("census_variable")))
 
+  let name = e.feature.getProperty("Name").split("(")
   // update the label
-  document.getElementById("data-label").textContent =
-    e.feature.getProperty("STATE_NAME");
+  document.getElementById("data-label").textContent =name[0].trim();
   document.getElementById("data-value").textContent = e.feature
     .getProperty("census_variable")
     .toLocaleString();
@@ -199,6 +212,12 @@ function mouseInToRegion(e) {
   document.getElementById("data-box").style.display = "block";
   document.getElementById("data-caret").style.display = "block";
   document.getElementById("data-caret").style.paddingLeft = percent + "%";
+  let busniessLevel = e.feature.getProperty("businessLevel")
+  let smallBusiness = e.feature.getProperty("smallBusiness")
+  let bigBusiness = e.feature.getProperty("bigBusiness")
+  document.querySelector("#totalB span").textContent = busniessLevel + "%"
+  document.querySelector("#bigB span").textContent = bigBusiness + "%"
+  document.querySelector("#smallB span").textContent = smallBusiness + "%"
 }
 
 /**
@@ -211,28 +230,43 @@ function mouseOutOfRegion(e) {
 }
 
 async function generateMapFeature(){
-  await fetch('/data/aus_lga.geojson').then(function(response) {
-    return response.json();
-  }).then(function(geo) {
-    // JSON data is available here
-    let mapFeature = []
-    const region = geo.features
+  try {
+    const response = await fetch('/data/aus_lga.geojson');
+    const geo = await response.json();
+    let mapFeature = [];
+    const region = geo.features;
     region.forEach(function(feature) {
-        // Access properties of each feature
-        var properties = feature.properties;
-        mapFeature.push(properties.Name)
-      });
-    return mapFeature
-    })
-  .catch(function(error) {
+      var properties = feature.properties;
+      mapFeature.push(properties.Name);
+    });
+    return mapFeature;
+  } catch (error) {
     console.log('Error:', error);
-  });
+    throw error;
+  }
 }
-function findArrayDifference(arr1, arr2) {
-  const set1 = new Set(arr1);
-  const set2 = new Set(arr2);
-  return [...arr1.filter(item => !set2.has(item)), ...arr2.filter(item => !set1.has(item))];
+async function generateBusiness (){
+  let businessLevel = await queryBSD()
+  let smallBusiness = await querySmallBForInfo()
+  console.log("small ", smallBusiness)
+  let bigBusiness = await queryBigBForInfo()
+  let businessFeature = []
+  const arrayLength = businessLevel.length
+  for (let i = 0; i < arrayLength; i++) {
+    const keys = Object.keys(businessLevel[i]);
+    businessFeature.push(keys[0])
+    for (const key of keys) {
+      let state = await map.data.getFeatureById(key)
+      if(state){
+        state.setProperty("businessLevel", businessLevel[i][key].toFixed(2));
+        state.setProperty("smallBusiness", smallBusiness[i][key].toFixed(2));
+        state.setProperty("bigBusiness", bigBusiness[i][key].toFixed(2));
+      }      
+    }
+  }
+  return businessFeature
+  
 }
+
 window.initMap = initMap
-// function generateData
 

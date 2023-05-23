@@ -28,6 +28,7 @@ app.engine('hbs',
         defaultlayout: 'main',
         extname: 'hbs',
         partialsDir: __dirname + '/views/partials/',
+        helpers: require('./public/js/helper.js').helpers,
     }))
 app.set('view engine', 'hbs')
 // path used to generate the html
@@ -35,8 +36,10 @@ app.set('view engine', 'hbs')
 // deal with request
 const userRouter = require("./routes/userRouter")
 const apiRouter = require("./routes/apiRouter")
-
+// frontend
 app.use('/',userRouter)
+
+// backend
 app.use('/',apiRouter)
 
 

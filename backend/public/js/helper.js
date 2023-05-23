@@ -1,12 +1,19 @@
-export function findArrayDifference(arr1, arr2) {
-    const set1 = new Set(arr1);
-    const set2 = new Set(arr2);
-    return [...arr1.filter(item => !set2.has(item)), ...arr2.filter(item => !set1.has(item))];
+const coffeeCase = 1
+const negativeCase = 2
+const entertainmentCase = 3
+
+
+
+const helpers = {
+  // show contetn when caseid is received
+  showContentById: function (id, options) {
+    if (id === coffeeCase) {
+      return 'Does the percentage of tweets mentioning coffee in an area to the total number of tweets mentioned coffee correlate with the percentage of business companies to the number of business companies in Australia?';
+    } else if (id === negativeCase) {
+      return 'Do the percentage of tweets expressing negative emotions about work and the Business Sophistication Indicator Standard Deviation in an area correlate with each other?';
+    } else if (id === entertainmentCase) {
+      return 'Do the percentage of tweets expressing positive emotions in an area at night correlate with the percentage of business companies to the number of business companies in Australia?';
+    }
   }
-  
-  // // Example usage:
-  // const array1 = [1, 2, 3, 4, 5];
-  // const array2 = [3, 4, 5, 6, 7];
-  // const difference = findArrayDifference(array1, array2);
-  // console.log(difference); // Output: [1, 2, 6, 7]
-  
+}
+module.exports.helpers = helpers

@@ -15,18 +15,7 @@ main,#template,#homepage{
     "#about"
     ; */
 }
-/* main>div{
-    margin: 5px;
-} */
-/* map:before,
-map:after {
-    content: "";
-    display: table;
-} */
 
-/* map:after {
-    clear: both;
-} */
 
 #controls{
     background-color: red;
@@ -41,14 +30,11 @@ map:after {
     display: grid;
     grid-template-rows: 5fr 0.5fr;
 }
-#mapData{
-    display: inline-grid;
 
-
-}
 #mapData > div, #showMap>div{
     margin: 10px;
 }
+
 #about{
     background-color: rgb(160, 160, 231);
 }
