@@ -7,7 +7,7 @@ const app = express()
 const cors = require('cors')
 const axios = require('axios')
 
-const port = 80
+const port = 8080
 // use body-parser to receive post i.e req.body
 const bodyParser = require('body-parser')
 
