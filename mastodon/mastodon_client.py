@@ -208,7 +208,7 @@ def main():
     mastodon = Mastodon(
         access_token=config_info["access_token"],
         api_base_url=config_info["api_base_url"],
-        version_check_mode="none"
+        mastodon_version="4.1.8"
     )
 
     # Connects to CouchDB
