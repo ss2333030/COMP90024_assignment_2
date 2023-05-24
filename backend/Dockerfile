@@ -4,4 +4,4 @@ COPY . /backend
 RUN npm install;\
     chmod +x app.js
 CMD node app.js
-EXPOSE 8080
+EXPOSE 80
