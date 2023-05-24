@@ -1,4 +1,4 @@
-import {queryCoffeeForAnalysis,queryNegativeForAnalysis,queryEntertainmentForAnalysis,queryTotBForAnalysis} from "/api/axios.js"
+import {queryObesityForInfo,queryCoffeeForAnalysis,queryNegativeForAnalysis,queryEntertainmentForAnalysis,queryTotBForAnalysis} from "/api/axios.js"
 const coffee = 1
 const negative = 2
 const entertainment = 3
@@ -7,7 +7,7 @@ logJSONData()
 // load analysis between sudo (busniess level ) vs twitter 
 
 async function logJSONData() {
-
+    queryObesityForInfo()
     // get the scenario id
     let id = document.querySelector('#analysis').getAttribute('value')
     let business  = await queryTotBForAnalysis()

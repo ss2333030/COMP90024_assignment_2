@@ -1,4 +1,13 @@
-import {queryCoffeeForMap,queryNegativeForMap,queryEntertainmentForMap,queryBSD,querySmallBForInfo,queryBigBForInfo} from "../api/axios.js"
+import {queryCoffeeForMap,queryNegativeForMap,queryEntertainmentForMap,queryBSD,querySmallBForInfo,
+  queryBigBForInfo,queryHealthForMap,queryAlchoholForInfo,queryObesityForInfo,querySmokerForInfo,
+  queryClimateForMap,
+  queryBicForInfo,
+  queryBusForInfo,
+  queryScooterForInfo,
+  queryTrainForInfo,
+  queryTramForInfo,
+  queryWalkForInfo,
+  queryUnempForMap,} from "../api/axios.js"
 
 
 // map feature
@@ -22,7 +31,7 @@ let map;
 
 // find the maxmium census Max
 let censusMax = -Number.MAX_VALUE
-
+let censusMin = Number.MAX_VALUE
 
 // will call initMap to show the data once the api is done
 function initMap() {
@@ -78,32 +87,56 @@ function loadMapShapes() {
 async function loadCensusData(scenario) {
   // load the requested variable from the census API (using local copies)
   let response;
-  let businessFeature = await generateBusiness()
+  let businessFeature = await generateBusiness(scenario)
   // get scenario data upon on page
   if (scenario == "1"){
+    censusMax = 5
+    censusMin = 0
     response = await queryCoffeeForMap()
-    console.log("response1: ", response)
+    
   }
   else if(scenario == "2"){
+    censusMax = 5
+    censusMin = 0
     response = await queryNegativeForMap()
-    console.log("response2: ", response)
+
   }
   else if (scenario == "3"){
+    censusMax = 5
+    censusMin = 0
     response = await queryEntertainmentForMap()
-    console.log("response3: ", response)
+    console.log("response1: ", response)
+  }
+  else if (scenario == "4"){
+    censusMax = 35000
+    censusMin = 1000
+    response = await queryClimateForMap()
+
+  }
+  else if (scenario == "5"){
+    censusMax = 35000
+    censusMin = 1000
+    response = await queryHealthForMap()
+  }
+  else if (scenario == "6"){
+    censusMax = 35000
+    censusMin = 1000
+    response = await queryUnempForMap()
+
   }
   // data from couchdb, record all region with data
   let dataFeature = Object.keys(response)
-
+  console.log("ob", response)
   // update the region value with data
   for (const [key, value] of Object.entries(response)) {
+    // console.log("key", key)
     let state = await map.data.getFeatureById(key)
     if (state) {
       // get min value and max value
-      let censusVariable = value
-      if (censusVariable > censusMax) {
-        censusMax = censusVariable;
-      }
+      // let censusVariable = value
+      // if (censusVariable > censusMax) {
+      //   censusMax = censusVariable;
+      // }
       state.setProperty("census_variable", value);
     }
 }
@@ -120,14 +153,13 @@ async function loadCensusData(scenario) {
   }
   // data from geojson, record all region in the map
   let mapFeature = await generateMapFeature()
-  console.log("map; ",mapFeature)
-  console.log("business: ", businessFeature)
 
   let unassign = mapFeature.filter(key => !dataFeature.includes(key))
   let unvisited = mapFeature.filter(key => !businessFeature.includes(key))
 
   console.log("un", unvisited)
   for(let key in unvisited){
+
     let state = await map.data.getFeatureById(unvisited[key])
       if (state) {
         state.setProperty("businessLevel", 0);
@@ -155,7 +187,7 @@ function styleFeature(feature) {
   const low = [190, 100, 50]; // color of smallest datum
   const high = [243, 100, 7]; // color of largest datum
   const delta =
-    (feature.getProperty("census_variable"));
+    (feature.getProperty("census_variable")-censusMin)/censusMax;
   const color = [];
   for (let i = 0; i < 3; i++) {
     // calculate an integer color based on the delta
@@ -212,12 +244,15 @@ function mouseInToRegion(e) {
   document.getElementById("data-box").style.display = "block";
   document.getElementById("data-caret").style.display = "block";
   document.getElementById("data-caret").style.paddingLeft = percent + "%";
+
   let busniessLevel = e.feature.getProperty("businessLevel")
-  let smallBusiness = e.feature.getProperty("smallBusiness")
+  let smallBusiness = e.feature.getProperty("smallBusiness") 
   let bigBusiness = e.feature.getProperty("bigBusiness")
+  if (document.querySelector("#totalB span")){
   document.querySelector("#totalB span").textContent = busniessLevel + "%"
   document.querySelector("#bigB span").textContent = bigBusiness + "%"
   document.querySelector("#smallB span").textContent = smallBusiness + "%"
+  }
 }
 
 /**
@@ -245,25 +280,47 @@ async function generateMapFeature(){
     throw error;
   }
 }
-async function generateBusiness (){
-  let businessLevel = await queryBSD()
-  let smallBusiness = await querySmallBForInfo()
-  console.log("small ", smallBusiness)
-  let bigBusiness = await queryBigBForInfo()
+
+async function generateHealth (){
+  // queryAlchoholForInfo,
+  // queryObesityForInfo,
+  // querySmokerForInfo,
+}
+async function generateBusiness (scenario){
+let businessLevel
+let smallBusiness
+let bigBusiness
+if(scenario == "1" || scenario == "2" || scenario == "3"){
+   businessLevel = await queryBSD()
+   console.log("businesslevle", businessLevel)
+   smallBusiness = await querySmallBForInfo()
+   bigBusiness = await queryBigBForInfo()
+
+} 
+else if (scenario == "5"){
+   businessLevel = await queryObesityForInfo()
+   smallBusiness = await queryAlchoholForInfo()
+   bigBusiness = await querySmokerForInfo()
+   console.log("businesslevle", smallBusiness)
+}
+else if(scenario == "4"){
+  businessLevel = await queryBusForInfo()
+  smallBusiness = await queryTrainForInfo()
+  bigBusiness = await queryTramForInfo()
+}
+
   let businessFeature = []
-  const arrayLength = businessLevel.length
-  for (let i = 0; i < arrayLength; i++) {
-    const keys = Object.keys(businessLevel[i]);
-    businessFeature.push(keys[0])
-    for (const key of keys) {
+// console.log("12",Object.keys(businessLevel))
+  for(let key in businessLevel){
+      businessFeature.push(key)
       let state = await map.data.getFeatureById(key)
       if(state){
-        state.setProperty("businessLevel", businessLevel[i][key].toFixed(2));
-        state.setProperty("smallBusiness", smallBusiness[i][key].toFixed(2));
-        state.setProperty("bigBusiness", bigBusiness[i][key].toFixed(2));
-      }      
-    }
+        state.setProperty("businessLevel", businessLevel[key].toFixed(2));
+        state.setProperty("smallBusiness", smallBusiness[key].toFixed(2));
+        state.setProperty("bigBusiness", bigBusiness[key].toFixed(2));
+      }  
   }
+
   return businessFeature
   
 }

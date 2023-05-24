@@ -10,7 +10,6 @@ aside .sidebar{
     transition: all 0.5s ease;
 }
 aside .sidebar .teamLogo{
-    margin-bottom: 30px;
     text-align: center;
 }
 /* color: indigo; */
@@ -32,7 +31,7 @@ aside .sidebar .teamLogo p{
     font-size: 14px;
 }
 
-aside .sidebar ul li a{
+aside .sidebar div .option a, .dropdown-btn span{
     display: flex;
     text-align: center;
     padding: 13px 10px;
@@ -42,27 +41,27 @@ aside .sidebar ul li a{
     text-decoration: none;
    
 }
-aside .sidebar ul li {
+aside .sidebar div .option {
     margin: 10px 0px;
     border-bottom: 1px solid white;
 }
-aside .sidebar ul li a .icon{
+aside .sidebar div .option a .icon{
     color: #dee4ec;
     width: 30px;
     display: inline-block;
 }
 
-aside .sidebar ul li a:hover, aside .sidebar ul li > a{
+aside .sidebar div .option a:hover, aside .sidebar div .option > a{
     color:white;
 }
 
-aside .sidebar ul li a:hover .icon,
-aside .sidebar ul li a.active .icon{
+aside .sidebar div .option a:hover .icon,
+aside .sidebar div .option a.active .icon{
     color: #0c7db1;
 }
 
-aside .sidebar ul li a:hover:before,
-aside .sidebar ul li a.active:before{
+aside .sidebar div .option a:hover:before,
+aside .sidebar div .option a.active:before{
     display: block;
 }
 
@@ -90,6 +89,14 @@ aside .section .top_navbar .hamburger a:hover{
     color: #a2ecff;
 }
 
-#census-variable li a:hover {
+#census-variable .option a:hover {
     background-color: #ddd;
+}
+.dropdown-container{
+    display: none;
+}
+.dropdown-btn{
+    text-align: center;
+    color: black;
+    border-bottom: 1px solid white;
 }

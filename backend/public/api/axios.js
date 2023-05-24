@@ -29,7 +29,6 @@ async function queryCoffeeForMast() {
   try {
     const total = await axios.get('/coffee/twitter')
     const coffeeMast = await axios.get('/coffee/mast')
-    console.log("total:", total)
     return coffeeMast.data.rows[0].value / total.data.rows[0].value 
     } catch (error) {
       console.error(error);
@@ -135,8 +134,11 @@ async function queryTotBForAnalysis() {
 async function queryBigBForInfo() {
   try {
     const bigBLGA = await axios.get('/sudo/big')
-    const convertedList = bigBLGA.data.rows.map(obj => ({[obj.key]: obj.value}));
-    return convertedList
+    const dictionary = bigBLGA.data.rows.reduce((acc, obj) => {
+      acc[obj.key] = obj.value;
+      return acc;
+    }, {});
+    return dictionary
   } catch (error) {
     console.error(error);
   }
@@ -157,8 +159,11 @@ async function queryBigBForAnalysis() {
 async function querySmallBForInfo() {
   try {
     const smallBLGA = await axios.get('/sudo/small')
-    const convertedList = smallBLGA.data.rows.map(obj => ({[obj.key]: obj.value}));
-    return convertedList
+    const dictionary = smallBLGA.data.rows.reduce((acc, obj) => {
+      acc[obj.key] = obj.value;
+      return acc;
+    }, {});
+    return dictionary
   } catch (error) {
     console.error(error);
   }
@@ -180,8 +185,11 @@ async function querySmallBForAnalysis() {
 async function queryBSD() {
   try {
     const busiSD = await axios.get('/sudo/bSD')
-    const convertedList = busiSD.data.rows.map(obj => ({[obj.key]: obj.value}));
-    return convertedList
+    const dictionary = busiSD.data.rows.reduce((acc, obj) => {
+      acc[obj.key] = obj.value;
+      return acc;
+    }, {});
+    return dictionary
   } catch (error) {
     console.error(error);
   }
@@ -244,16 +252,197 @@ async function queryMastodonWork() {
   }
 }
 
+// Function returns the number of people having health issues in each lga
+async function queryHealthForMap() {
+  try {
+      const health = await axios.get('/sudo/health')
+      let mergedObject = {};
+
+      for (let i = 0; i < health.data.rows.length; i++) {
+          mergedObject[health.data.rows[i].key] = health.data.rows[i].value;
+        }
+      return mergedObject
+      } catch (error) {
+        console.error(error);
+      }
+}
+
+// Function calculates the percentage of people having alchohol issues among all three health issues in each lga
+async function queryAlchoholForInfo() {
+  try {
+      const alchohol = await axios.get('/sudo/alchohol')
+      const health = await axios.get('/sudo/health')
+      let result = await calPercentSudo(health, alchohol)
+      return result
+      } catch (error) {
+        console.error(error);
+      }
+}
+
+// Function calculates the percentage of people having obesity issues among all three health issues in each lga
+async function queryObesityForInfo() {
+  try {
+      const obesity = await axios.get('/sudo/obesity')
+      const health = await axios.get('/sudo/health')
+      let result = await calPercentSudo(health, obesity)
+      return result
+      } catch (error) {
+        console.error(error);
+      }
+}
+// Function calculates the percentage of people having smoking issues among all three health issues in each lga
+async function querySmokerForInfo() {
+  try {
+      const smoker = await axios.get('/sudo/smoker')
+      const health = await axios.get('/sudo/health')
+      let result = await calPercentSudo(health, smoker)
+      return result
+      } catch (error) {
+        console.error(error);
+      }
+}
+
+
+
+// Function returns the unemployment rate in each lga
+async function queryUnempForMap() {
+  try {
+      const unemp = await axios.get('/sudo/unemp')
+      const dictionary = unemp.data.rows.reduce((acc, obj) => {
+        acc[obj.key] = obj.value;
+        return acc;
+      }, {});
+      return dictionary
+      } catch (error) {
+        console.error(error);
+      }
+}
+
+
+
+
+// Function calculates the percentage of people taking eco-friendly transportation
+async function queryClimateForMap() {
+  try {
+      const climate = await axios.get('/sudo/climate')
+      const transport = await axios.get('/sudo/transport')
+      let result = await calPercentSudo(climate, transport)
+      return result
+      } catch (error) {
+        console.error(error);
+      }
+}
+
+// Function calculates the percentage of people taking bicycles
+async function queryBicForInfo() {
+  try {
+      const climate = await axios.get('/sudo/climate')
+      const bic = await axios.get('/sudo/bic')
+      let result = await calPercentSudo(climate, bic)
+      return result
+      } catch (error) {
+        console.error(error);
+      }
+}
+// Function calculates the percentage of people taking buses
+async function queryBusForInfo() {
+  try {
+      const climate = await axios.get('/sudo/climate')
+      const bus = await axios.get('/sudo/bus')
+      let result = await calPercentSudo(climate, bus)
+      console.log("12",result)
+      return result
+      } catch (error) {
+        console.error(error);
+      }
+}
+// Function calculates the percentage of people taking scooters
+async function queryScooterForInfo() {
+  try {
+      const climate = await axios.get('/sudo/climate')
+      const scooter = await axios.get('/sudo/scooter')
+      let result = await calPercentSudo(climate, scooter)
+      return result
+      } catch (error) {
+        console.error(error);
+      }
+}
+
+// Function calculates the percentage of people taking trains
+async function queryTrainForInfo() {
+  try {
+      const climate = await axios.get('/sudo/climate')
+      const train = await axios.get('/sudo/train')
+      let result = await calPercentSudo(climate, train)
+      return result
+      } catch (error) {
+        console.error(error);
+      }
+}
+
+// Function calculates the percentage of people taking trams
+async function queryTramForInfo() {
+  try {
+      const climate = await axios.get('/sudo/climate')
+      const tram = await axios.get('/sudo/tram')
+      let result = await calPercentSudo(climate, tram)
+      return result
+      } catch (error) {
+        console.error(error);
+      }
+}
+
+// Function calculates the percentage of people taking trams
+async function queryWalkForInfo() {
+  try {
+      const climate = await axios.get('/sudo/climate')
+      const walk = await axios.get('/sudo/walk')
+      let result = await calPercentSudo(climate, walk)
+      return result
+      } catch (error) {
+        console.error(error);
+      }
+}
+
+
+
+
 // Function calculates the percentage for twitter data
 function calPercent(total, lga){
   let total_num = total.data.rows[0].value
   let lgas = lga.data.rows
+  console.log("obesity", lgas)
   for (let i=0; i<lgas.length; i++){
     let value = lgas[i].value
+    if (isNaN(value) || value == null){
+      value = 0
+    }
     let percent = (value / total_num) * 100 
     lgas[i].value = percent
   }
   return lgas
+}
+
+// Function calculates the percentage for sudo data
+function calPercentSudo(total, lga){
+  let result = {}
+  let total_num = total.data.rows
+  let lgas = lga.data.rows 
+  for (let i=0; i<lgas.length; i++){
+    let denominator = lgas[i].value
+    let key = lgas[i].key
+    let numerator = total_num[i].value
+    let percent
+    if (isNaN(denominator) || denominator == null){
+      percent = 0
+    }else if(isNaN(numerator) || numerator == null){
+      percent = 0
+    }else{
+      percent = (denominator / numerator) * 100 
+    }
+  result[key] = percent
+  }
+  return result
 }
 
 // Function to calculate the difference of percentages between the post percentage for each topics 
@@ -263,7 +452,6 @@ function calDiff(scene, busi){
   for (let i=0; i<scene.length; i++){
     for (let j=0; j<busi.length; j++){
       if (scene[i].key == busi[j].key){
-        console.log("minus")
         result[scene[i].key] = Math.abs(scene[i].value - busi[i].value)
       }
     }
@@ -305,6 +493,18 @@ export {
   queryBSDForAnalysis,
   queryTotBForAnalysis,
   queryCoffeeForMast,
-  queryNegaForMast
+  queryNegaForMast,
+  queryHealthForMap,
+  queryAlchoholForInfo,
+  queryObesityForInfo,
+  querySmokerForInfo,
+  queryUnempForMap,
+  queryClimateForMap,
+  queryBicForInfo,
+  queryBusForInfo,
+  queryScooterForInfo,
+  queryTrainForInfo,
+  queryTramForInfo,
+  queryWalkForInfo,
 }
 

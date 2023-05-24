@@ -1,8 +1,8 @@
 // chart.js to show the chart
 import {queryMastodonCoffee,queryMastodonNega,queryCoffeeForMast,queryNegaForMast} from "/api/axios.js"
-realMastodonPie()
-realMastodonBar()
 
+setInterval(realMastodonPie,1000)
+setInterval(realMastodonBar,1000)
 // fetch mastodon data from the couchdb 
 // use to compare the volumen of coffee posts and negative work in all twitter
 async function realMastodonPie() {
@@ -77,7 +77,7 @@ async function realMastodonPie() {
     let negativeTwitter = await queryNegaForMast()
     let coffeeMast = await queryMastodonCoffee()
     let negativeMast = await queryMastodonNega() 
-
+    let date = new Date()
     var trace1 = {
       y: ["Coffee","Negative Work Attitude"],
       x: [coffeeTwitter,negativeTwitter],
@@ -96,7 +96,7 @@ async function realMastodonPie() {
     var data = [trace1, trace2];
     var layout = {
         barmode: 'group',
-        title:"Comparsion between Twitter and Mastodon Data " ,
+        title:`Comparsion between Twitter and Mastodon Data at ${date.toLocaleString()}` ,
         autosize: true,
         height: 400,
         width: 700,

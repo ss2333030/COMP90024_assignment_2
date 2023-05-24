@@ -9,6 +9,7 @@ main,#template,#homepage{
     display: grid;
     grid-template-rows: 0.5fr 3fr 1fr;
     padding: 15px 20px;
+    overflow: scroll;
     /* grid-template-areas: 
     "controls"
     "#mapInfo"

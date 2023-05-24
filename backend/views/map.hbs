@@ -21,19 +21,51 @@
             </div>
         </div>
         <div id="mapData">
-            <h3>Information of selected area</h3>
+          <h3>Information of selected area</h3>
+          {{#showInformationById id}}
+              <div id="totalB">
+                <div>Business Level</div>
+                <span></span>
+              </div>
+              <div id ="bigB">
+                <div>Large Business Percentage</div>
+                <span></span>
+                </div>
+              <div id ="smallB">
+                <div>Small Business Percentage</div>
+                <span></span>
+              </div>
+            {{/showInformationById}}
+
+          {{#showHealthById id}}
             <div id="totalB">
-              <div>Business Level</div>
+              <div>Obesity</div>
               <span></span>
             </div>
             <div id ="bigB">
-              <div>Large Business Percentage</div>
+              <div>Alchohol</div>
               <span></span>
               </div>
             <div id ="smallB">
-              <div>Small Business Percentage</div>
+              <div>Smoker</div>
               <span></span>
             </div>
+          {{/showHealthById}}
+          
+          {{#showClimateById id}}
+            <div id="totalB">
+              <div>Bus</div>
+              <span></span>
+            </div>
+            <div id ="bigB">
+              <div>Train</div>
+              <span></span>
+              </div>
+            <div id ="smallB">
+              <div>Tram</div>
+              <span></span>
+            </div>
+          {{/showClimateById}}
         </div>
       </div>
     
@@ -41,9 +73,8 @@
         <div><h3>Hypothesis of Scenraio{{id}}</h3></div>
         <div id ="hypo">{{showContentById id}}</div>
       </div>
-
-
     </div>
+
 </div>
 
 

@@ -41,4 +41,25 @@ apiRouter.get('/mast/total',apiController.renderMastTotal)
 apiRouter.get('/mast/nega',apiController.renderMastNega)
 apiRouter.get('/mast/work',apiController.renderMastWork)
 
+
+//Health
+apiRouter.get('/sudo/health',apiController.renderSudoHealth)
+apiRouter.get('/sudo/obesity',apiController.renderSudoObesity)
+apiRouter.get('/sudo/smoker',apiController.renderSudoSmoker)
+apiRouter.get('/sudo/alchohol',apiController.renderSudoAlchohol)
+
+
+//Unemployment
+apiRouter.get('/sudo/unemp',apiController.renderSudoUnemp)
+
+//Climate Change
+apiRouter.get('/sudo/climate',apiController.renderSudoClimate)
+apiRouter.get('/sudo/transport',apiController.renderSudoTransport)
+apiRouter.get('/sudo/bic',apiController.renderSudoBic)
+apiRouter.get('/sudo/bus',apiController.renderSudoBus)
+apiRouter.get('/sudo/scooter',apiController.renderSudoScooter)
+apiRouter.get('/sudo/train',apiController.renderSudoTrain)
+apiRouter.get('/sudo/tram',apiController.renderSudoTram)
+apiRouter.get('/sudo/walk',apiController.renderSudoWalk)
+
 module.exports = apiRouter
