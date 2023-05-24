@@ -5,31 +5,31 @@
     - variables/openstack.yaml
   gather_facts: true
   roles:
-    - role: openstack-prep
-    - role: openstack-volume
-    - role: openstack-security-group
+    # - role: openstack-prep
+    # - role: openstack-volume
+    # - role: openstack-security-group
     - role: openstack-instance
 
-- name: CouchDB
-  hosts: db_servers
-  vars_files:
-    - variables/couchdb.yaml
-  gather_facts: true
-  roles:
-    - role: setup-prep
-    - role: setup-docker
-    - role: couchdb-couchdb
+# - name: CouchDB
+#   hosts: db_servers
+#   vars_files:
+#     - variables/couchdb.yaml
+#   gather_facts: true
+#   roles:
+#     - role: setup-prep
+#     - role: setup-docker
+#     - role: couchdb-couchdb
 
-- name: Mastodon
-  hosts: mastodon_servers
-  vars_files:
-    - variables/mastodon.yaml
-  gather_facts: true
-  roles:
-    - role: setup-prep
-    - role: setup-docker
-    - role: mastodon-get-app
-    - role: mastodon-mastodon
+# - name: Mastodon
+#   hosts: mastodon_servers
+#   vars_files:
+#     - variables/mastodon.yaml
+#   gather_facts: true
+#   roles:
+#     - role: setup-prep
+#     - role: setup-docker
+#     - role: mastodon-get-app
+#     - role: mastodon-mastodon
 
 - name: Backend
   hosts: backend_servers

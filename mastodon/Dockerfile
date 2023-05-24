@@ -1,4 +1,4 @@
-FROM python
+FROM python:3.10.6
 WORKDIR /mastodon
 COPY . /mastodon
 RUN pip install couchdb;\
@@ -7,3 +7,4 @@ RUN pip install couchdb;\
     pip install -q transformers;\
     chmod +x run.sh
 CMD ./run.sh
+

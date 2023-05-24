@@ -208,7 +208,6 @@ def main():
     mastodon = Mastodon(
         access_token=config_info["access_token"],
         api_base_url=config_info["api_base_url"],
-        mastodon_version="4.1.8"
     )
 
     # Connects to CouchDB
@@ -231,7 +230,17 @@ def main():
     print("The Mastodon client is now streaming data...")
 
     # Streams Mastodon data
-    mastodon.stream_public(MyListener(mastodon_db, MyHTMLParser(), coffee_keywords, work_keywords, sentiment_pipeline), local=True)
+    mastodon.stream_public(
+        MyListener(
+            mastodon_db,
+            MyHTMLParser(),
+            coffee_keywords,
+            work_keywords,
+            sentiment_pipeline,
+        ),
+        local=True,
+        timeout=864000
+    )
 
 
 if __name__ == "__main__":

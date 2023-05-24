@@ -18,8 +18,8 @@ docker_container_name: mastodon
 
 mastodon_servers:
   node-1: 
-    access_token: "7tu0pIwqqf5te_ZRnduAzTD75tZ9b0hMy2vkQTgacR8"
+    access_token: "57q9jJzx7y6__lA4mvOWN8OjuNU-i6OYptJa65GIwOo"
     api_base_url: "https://mastodon.social/"
   node-2:
-    access_token: "PRYvNMDjNZwMDa87L5PD3KhgcgQlYf7UgtaCiEarrUc"
+    access_token: "zaRX-MrT0uQvx--FCvpjHgWKGx1qCaBftpIpHotAMZM"
     api_base_url: "https://mstdn.social/"
